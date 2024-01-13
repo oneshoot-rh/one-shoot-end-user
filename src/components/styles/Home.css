@@ -1,0 +1,22 @@
+
+.home{
+    padding: var(--main-padding);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    font-family: 'Salsa', cursive;
+    .home__content{
+        font-size: 1.5rem;
+        line-height: 2;
+        text-align: justify;
+        margin: 1rem auto;
+    }
+    .call_to_action{
+        button{
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+        }
+    }
+}

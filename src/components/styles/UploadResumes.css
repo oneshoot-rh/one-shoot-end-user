@@ -1,0 +1,24 @@
+
+
+
+.upload__resumes{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    min-height: 75vh;
+    padding: var(--main-padding);
+    .informative{
+        padding: var(--main-padding);
+        background-color: var(--light-color);
+        border-radius: 8px;
+    }
+    .upload__section{
+        padding: calc(var(--main-padding) * 2);
+    }
+}
+
+
+.upload__input{
+    margin: 2rem 0 ;
+}
