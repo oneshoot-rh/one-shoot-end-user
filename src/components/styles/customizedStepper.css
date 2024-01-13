@@ -1,0 +1,18 @@
+.stepper_stack{
+    margin-top: 4rem;
+}
+
+
+.step__container{
+    padding: 2rem;
+}
+
+.step__label > * {
+    color: var(--text-color) !important; 
+}
+
+
+.css-1hv8oq8-MuiStepLabel-label.Mui-active{
+    color: var(--color-secondary) !important;
+    font-weight: bold !important;
+}

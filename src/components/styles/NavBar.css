@@ -1,6 +1,6 @@
 .navbar {
   background-color: #47fa7a00;
-  background-color: #98d0b2;
+  background-color: #ededed;
   overflow: hidden;
   top: 0;
   width: 100%;
@@ -13,21 +13,26 @@
   .navbar {
     border-bottom: calc(var(--main-border-size) * 2) solid var(--color-secondary);
   }
+  .navbar__logo{
+    background-image: url("/logo-light.png");
+  }
+
 }
 
 @media (prefers-color-scheme: dark) {
   .navbar {
     background-color: #47fa7a00;
   }
+  .navbar__logo{
+    background-image: url("/logo.png");
+  }
 }
 .navbar__logo{
-    height: 70px;
+    height: 50px;
     width: 100px;
     margin-left: 50px;
-    img{
-        height: 100%;
-        width: 100%;
-    }
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 .navbar__links{
     display: flex;
