@@ -14,6 +14,7 @@ import { Alert, IconButton } from "@mui/material"
 import {  GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid"
 import DeleteIcon from "@mui/icons-material/Delete";
+import CustomizedSteppers from "./CustomizedStepper";
 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -27,13 +28,14 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 
 const UploadResumes = () => {
+  const [activeStep, setActiveStep] = useState(0)
   const [deleteUploadedFromServerDialogShown, setDeleteUploadedFromServerDialogShown] = useState(false);
   const [fileList, setFileList] = useState<FileList | null>(null)
   const [resp, setResp] = useState<any>()
-  const [showUploadSection , setShowUploadSection] = useState(true)
+  const [showUploadSection, setShowUploadSection] = useState(true)
   const columns = [
-    { field: 'fileName', headerName: 'File Name', width: 200  },
-    { field: 'uploaded', headerName: 'Uploaded', width: 200  },
+    { field: 'fileName', headerName: 'File Name', width: 200 },
+    { field: 'uploaded', headerName: 'Uploaded', width: 200 },
     { field: 'processed', headerName: 'Processed', width: 200 },
   ];
   
@@ -43,11 +45,11 @@ const UploadResumes = () => {
       setFileList(e.target.files)
     }
   }
-  const uploadMutation = useMutation(async (formData : any) => {
-      const response = await axios.post('/api/v1/upload', formData)
-      return response.data;
+  const uploadMutation = useMutation(async (formData: any) => {
+    const response = await axios.post('/api/v1/upload', formData)
+    return response.data;
   })
-  const someUploadSuccess = (uploadedFiles: any[]) : boolean => {
+  const someUploadSuccess = (uploadedFiles: any[]): boolean => {
     return uploadedFiles.some((file: any) => file.isUploaded === true)
   }
   const handleDeleteUploadedFilesToServer = () => {
@@ -57,17 +59,16 @@ const UploadResumes = () => {
   const handleClose = () => {
     setDeleteUploadedFromServerDialogShown(false);
   }
-  const proceed = () => {
-    console.log('proceed');
-    
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   }
 
   const files = fileList ? [...fileList] : []
-  const handleUploadClick = async () => {    
+  const handleUploadClick = async () => {
     if (files.length > 0) {
       const formData = new FormData();
       files.forEach((element) => {
-        formData.append(`files`, element,element.name);
+        formData.append(`files`, element, element.name);
       });
 
       try {
@@ -75,11 +76,11 @@ const UploadResumes = () => {
           .then((data) => {
             console.log(data);
             setResp(data)
-            if(someUploadSuccess(data.uploadedFiles)){
+            if (someUploadSuccess(data.uploadedFiles)) {
               setShowUploadSection(false)
             }
           })
-      }catch(error){
+      } catch (error) {
         console.log(error)
       }
     
@@ -94,19 +95,26 @@ const UploadResumes = () => {
     })) : []
 
   const CustomToolbar = () => (
-  <GridToolbarContainer>
-    <IconButton
-      color="primary"
-      aria-label="Delete"
-      size="small"
-      onClick={handleDeleteUploadedFilesToServer}
-    >
-      <DeleteIcon />
-    </IconButton>
-    <GridToolbarExport />
-  </GridToolbarContainer>
-);
-  return (
+    <GridToolbarContainer>
+      <IconButton
+        color="primary"
+        aria-label="Delete"
+        size="small"
+        onClick={handleDeleteUploadedFilesToServer}
+      >
+        <DeleteIcon />
+      </IconButton>
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
+  const steps = [
+    'Upload Resumes',
+    'Process Recommendation',
+    'View Results'
+  ]
+
+
+  const UploadResumeSection = () => (
     <div className="upload__resumes">
       <div className="informative">
           <h2>Upload Resumes</h2>
@@ -133,9 +141,9 @@ const UploadResumes = () => {
                 className="upload__resumes__table"
             />
             <div className="upload__resumes__table__footer">
-              <Button variant="contained" onClick={proceed}>
+              <button  onClick={handleNext} className="active__button">
                 Proceed
-              </Button>
+              </button>
              <Fragment>
                 <BootstrapDialog
                   onClose={handleClose}
@@ -188,7 +196,24 @@ const UploadResumes = () => {
         </div>
       )
       }
-    </div>
+      </div>
+  )
+
+  const stepsComponents = [
+    UploadResumeSection(),
+    <>
+      <p>Process Resumes _</p>
+      <button onClick={handleNext}>Next</button>
+    </>,
+     <>
+      <p>view result _</p>
+      <button onClick={handleNext}>Next</button>
+    </>
+  ]
+  return (
+    <>
+    <CustomizedSteppers steps={steps} stepsComponents={stepsComponents} handleNext={handleNext} activeStep={activeStep} />
+      </>
   )
 }
 
