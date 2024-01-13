@@ -1,16 +1,41 @@
 import axios from "axios"
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import { useMutation } from "react-query"
-
+import Button from '@mui/material/Button';
+import { styled } from '@mui/material/styles';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import CloseIcon from '@mui/icons-material/Close';
+import Typography from '@mui/material/Typography';
 import "./styles/UploadResumes.css"
 import { Alert, IconButton } from "@mui/material"
+import {  GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid"
+import DeleteIcon from "@mui/icons-material/Delete";
 
 
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  },
+}));
 
 
 const UploadResumes = () => {
+  const [deleteUploadedFromServerDialogShown, setDeleteUploadedFromServerDialogShown] = useState(false);
   const [fileList, setFileList] = useState<FileList | null>(null)
-  const [resp , setResp] = useState<any>()
+  const [resp, setResp] = useState<any>()
+  const [showUploadSection , setShowUploadSection] = useState(true)
+  const columns = [
+    { field: 'fileName', headerName: 'File Name', width: 200  },
+    { field: 'uploaded', headerName: 'Uploaded', width: 200  },
+    { field: 'processed', headerName: 'Processed', width: 200 },
+  ];
   
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,64 +47,153 @@ const UploadResumes = () => {
       const response = await axios.post('/api/v1/upload', formData)
       return response.data;
   })
+  const someUploadSuccess = (uploadedFiles: any[]) : boolean => {
+    return uploadedFiles.some((file: any) => file.isUploaded === true)
+  }
+  const handleDeleteUploadedFilesToServer = () => {
+    setDeleteUploadedFromServerDialogShown(true);
+    console.log('request to delete specified files from server');
+  };
+  const handleClose = () => {
+    setDeleteUploadedFromServerDialogShown(false);
+  }
+  const proceed = () => {
+    console.log('proceed');
+    
+  }
+
   const files = fileList ? [...fileList] : []
-  const handleUploadClick = async () => {
-    if (files) {
+  const handleUploadClick = async () => {    
+    if (files.length > 0) {
       const formData = new FormData();
       files.forEach((element) => {
         formData.append(`files`, element,element.name);
       });
 
       try {
-        setResp(await uploadMutation.mutateAsync(formData));
+        await uploadMutation.mutateAsync(formData)
+          .then((data) => {
+            console.log(data);
+            setResp(data)
+            if(someUploadSuccess(data.uploadedFiles)){
+              setShowUploadSection(false)
+            }
+          })
       }catch(error){
         console.log(error)
       }
     
     }
-
   }
+  const rows = resp ? resp.uploadedFiles.map((file: any) => (
+    {
+      id: file.fileName,
+      fileName: file.fileName,
+      processed: file.isProcessed === true ? 'Yes ✅' : 'No ❌',
+      uploaded: file.isUploaded === true ? 'Yes ✅' : 'No ❌'
+    })) : []
 
+  const CustomToolbar = () => (
+  <GridToolbarContainer>
+    <IconButton
+      color="primary"
+      aria-label="Delete"
+      size="small"
+      onClick={handleDeleteUploadedFilesToServer}
+    >
+      <DeleteIcon />
+    </IconButton>
+    <GridToolbarExport />
+  </GridToolbarContainer>
+);
   return (
     <div className="upload__resumes">
       <div className="informative">
           <h2>Upload Resumes</h2>
           <Alert variant="outlined" severity="info" >
-            Make sure that files uploaded are representing resumes in PDF format.
+          Make sure that files uploaded are representing resumes in PDF format. <br />
+          Loaded files will be processed and saved in the database. <br />
+          If you request to delete uploaded files from the server, they will be deleted permanently. <br />
           </Alert>
-          {resp && (
-            <div>
+          {resp  &&  (
+          <div>
+            {someUploadSuccess(resp.uploadedFiles) && (
               <Alert variant="outlined" severity="success" >
                 {resp.uploadedFiles.length} files uploaded successfully
-              </Alert>
-              <table>
-                <thead>
-                  <tr>
-                    <th>File Name</th>
-                    <th>status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {resp.uploadedFiles.map((file: any) => (
-                    <tr key={file.fileName}>
-                      <td>{file.fileName}</td>
-                      <td>{file.state}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            </Alert>
+            )}
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSizeOptions={[5, resp.uploadedFiles.length]}
+                checkboxSelection
+                components={{
+                  Toolbar: CustomToolbar
+              }}
+                className="upload__resumes__table"
+            />
+            <div className="upload__resumes__table__footer">
+              <Button variant="contained" onClick={proceed}>
+                Proceed
+              </Button>
+             <Fragment>
+                <BootstrapDialog
+                  onClose={handleClose}
+                  aria-labelledby="customized-dialog-title"
+                  open={deleteUploadedFromServerDialogShown}
+                >
+                  <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+                    Deleted Selected Files from Server
+                  </DialogTitle>
+                  <IconButton
+                    aria-label="close"
+                    onClick={handleClose}
+                    sx={{
+                      position: 'absolute',
+                      right: 8,
+                      top: 8,
+                      color: (theme) => theme.palette.grey[500],
+                    }}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                  <DialogContent dividers>
+                    <Typography gutterBottom>
+                      I am aware that this action will delete all uploaded files from the server.
+                    </Typography>
+                    <Typography gutterBottom>
+                      This action cannot be undone.
+                    </Typography>
+                    <Typography gutterBottom>
+                      for more information please contact the administrator.
+                    </Typography>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button autoFocus onClick={handleClose}>
+                      Delete
+                    </Button>
+                  </DialogActions>
+                </BootstrapDialog>
+              </Fragment>
             </div>
+          </div>
           )}
           {uploadMutation.isLoading && <p>Uploading...</p>}
           {uploadMutation.isError && <p>Error uploading file(s)</p>}
       </div>
-      <div className="upload__section">
-        <input type="file" accept='application/pdf' onChange={handleUpload} multiple className="upload__input" />
-        <button onClick={handleUploadClick}>Upload</button>
-      </div>
+      {showUploadSection && (
+          <div className="upload__section">
+          <input type="file" accept='application/pdf' onChange={handleUpload} multiple className="upload__input" />
+          <button onClick={handleUploadClick} disabled={files.length==0}>Upload</button>
+        </div>
+      )
+      }
     </div>
   )
 }
+
+
+
 
 
 
