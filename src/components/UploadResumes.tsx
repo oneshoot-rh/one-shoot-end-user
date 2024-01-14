@@ -141,9 +141,13 @@ const UploadResumes = () => {
                 className="upload__resumes__table"
             />
             <div className="upload__resumes__table__footer">
-              <button  onClick={handleNext} className="active__button">
-                Proceed
-              </button>
+              {
+                someUploadSuccess(resp.uploadedFiles) && (
+                  <button  onClick={handleNext} className="active__button">
+                    Proceed
+                  </button>
+                )
+              }
              <Fragment>
                 <BootstrapDialog
                   onClose={handleClose}
