@@ -22,6 +22,9 @@
             flex: 1;
             flex-basis: 35%;
             margin-bottom: 10px;
+            .option_icon svg{
+                    
+            }
             
         }
         .option:hover{

@@ -1,7 +1,8 @@
 
 import { useNavigate } from "react-router-dom";
 import "./styles/ProcessRecommendation.css";
-
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 
 const ProcessRecommendation = () => {
 
@@ -22,7 +23,7 @@ const ProcessRecommendation = () => {
             <div className="options">
                 <div className="option"  onClick={()=>handleUploadResumes('upload')}>
                     <div className="option_icon">
-                        <img src="/icons-resume.png" alt="upload" />
+                       <CloudUploadIcon  fontSize="large" />
                     </div>
                     <div className="option__title">
                         <h3>Upload Resumes</h3>
@@ -33,7 +34,7 @@ const ProcessRecommendation = () => {
                 </div>
                 <div className="option" onClick={()=>handleUploadResumes('suggest')}>
                     <div className="option_icon">
-                        <img src="/icons-candidate.png" alt="upload" />
+                        <PersonSearchIcon fontSize="large"/>
                     </div>
                     <div className="option__title">
                         <h3>Suggest Candidates</h3>

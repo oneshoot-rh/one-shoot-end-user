@@ -1,22 +1,25 @@
 
 .home{
+background-image: url('/OneShoot.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
     padding: var(--main-padding);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 80vh;
+    height: 83vh;
     font-family: 'Salsa', cursive;
-    .home__content{
-        font-size: 1.5rem;
-        line-height: 2;
-        text-align: justify;
-        margin: 1rem auto;
-    }
+    position: relative;
     .call_to_action{
+        position: absolute;
+        bottom: 2rem;
+        right: 5rem;
         button{
             background-color: var(--color-secondary);
-            color: var(--color-primary);
+            color: var(--text-color);
+            padding: 0.8rem var(--main-padding)  
         }
     }
 }
