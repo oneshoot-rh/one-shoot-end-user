@@ -1,6 +1,5 @@
 .navbar {
-  background-color: #47fa7a00;
-  background-color: #ededed;
+  background-color: #15112b;
   overflow: hidden;
   top: 0;
   width: 100%;
@@ -14,21 +13,22 @@
     border-bottom: calc(var(--main-border-size) * 2) solid var(--color-secondary);
   }
   .navbar__logo{
-    background-image: url("/logo-light.png");
+    /* background-image: url("/logo-light.png"); */
   }
 
 }
+.navbar__logo{
+    background-image: url("/logo.png");
+  }
 
 @media (prefers-color-scheme: dark) {
   .navbar {
     background-color: #47fa7a00;
   }
-  .navbar__logo{
-    background-image: url("/logo.png");
-  }
+  
 }
 .navbar__logo{
-    height: 50px;
+    height: 60px;
     width: 100px;
     margin-left: 50px;
     background-size: contain;
