@@ -17,9 +17,9 @@ const MenuProps = {
     },
   },
 };
+const JOB_DESCRIPTION_LENGTH_OBLIGATION = 100
 
-
-const AddSelectionFilter = () => {
+const AddSelectionFilter = (props:any) => {
 
 
     const [selectionVariables , setSelectionVariables] = useState<SelectionVariable[]>([
@@ -95,6 +95,7 @@ const AddSelectionFilter = () => {
         }
     ])
     const [activeSelectionVariable, setActiveSelectionVariable] = useState<string>("")
+    const [jobDescription, setJobDescription] = useState<string>("")
     const [activeSelectionVariableValue, setActiveSelectionVariableValue] = useState<any>([])
     const [selectionVariablesList, setSelectionVariablesList] = useState<SelectionVariable[]>([])
     const handleChange = (event: SelectChangeEvent) => {
@@ -139,6 +140,12 @@ const AddSelectionFilter = () => {
         setActiveSelectionVariableValue("")
         console.log(selectionVariablesList);
     }
+    const filterOptionFilled = () => {
+        console.log("jd", jobDescription.length < 100);
+        console.log("sv",selectionVariablesList.length <= selectionVariables.length);
+        return selectionVariablesList.length >= selectionVariables.length ||
+            jobDescription.length > JOB_DESCRIPTION_LENGTH_OBLIGATION; // 100 character 
+    }
 
     const renderSelectionVariableInput = () => {
         const selectedVariable = selectionVariables.find((selectionVariable: SelectionVariable) => selectionVariable.name === activeSelectionVariable)
@@ -146,7 +153,7 @@ const AddSelectionFilter = () => {
         else if (selectedVariable.select) {
             if (selectedVariable.select.type === "multiple") {
                 return (
-                    <FormControl sx={{ m: 1, minWidth: "50%" ,mt: 3,mb:3 , flex:1}} size="small">
+                    <FormControl sx={{ m: 1, minWidth: "50%" ,mt: 3,mb:3 , flex:1}} >
                         <InputLabel id="demo-multiple-checkbox-label">{activeSelectionVariable}</InputLabel>
                         <Select
                             labelId="demo-multiple-checkbox-label"
@@ -171,7 +178,7 @@ const AddSelectionFilter = () => {
                 );
             } else if (selectedVariable.select.type === "single") {
                 return (
-                    <FormControl sx={{ m: 1, minWidth: "50%" ,mt: 3,mb:3 , flex:1}} size="small">
+                    <FormControl sx={{ m: 1, minWidth: "50%" ,mt: 3,mb:3 , flex:1}} >
                         <InputLabel id="demo-simple-select-label">{activeSelectionVariable}</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
@@ -192,7 +199,7 @@ const AddSelectionFilter = () => {
             }
         }
         else return <TextField
-                                size="small"
+                               
                                 id="outlined-multiline-static"
                                 label={activeSelectionVariable}
                                 defaultValue=""
@@ -215,25 +222,11 @@ const AddSelectionFilter = () => {
     
     return (
         <>
-            <h1>Add Selection Filter</h1>
-            {
-                selectionVariablesList.length > 0 && (
-                    <div className="selection__variables__list">
-                        <h3>Selection Variables</h3>
-                        <ul>
-                            {
-                                selectionVariablesList.map((selectionVariable: SelectionVariable) => (
-                                    <li key={selectionVariable.name}>{selectionVariable.name} : {selectionVariable.value}</li>
-                                ))
-                            }
-                        </ul>
-                    </div>
-                )
-            }
-
+        <Box sx={{ display: "flex", justifyContent:"space-between" }}>
             <div className="selection__variables">
+                <h3>Add Selection Filter</h3>
                 <Box sx={{display: "flex"}}>
-                    <FormControl sx={{ m: 1, minWidth: "50%" ,mt: 3,mb:3}} size="small">
+                    <FormControl sx={{ m: 1, minWidth: "50%" ,mt: 3,mb:3}} >
                         <InputLabel id="demo-select-small-label">Filter</InputLabel>
                         <Select
                             labelId="demo-select-small-label"
@@ -274,8 +267,37 @@ const AddSelectionFilter = () => {
                      
                 
             </div>
-            
-        </>
+            <Box sx={{width:"50%",paddingInline:"2rem"}}>
+                <h3>Put Job Description</h3>
+                <TextField
+                    id="outlined-multiline-static"
+                    label="Job Description"
+                    multiline
+                    rows={8}    
+                    variant="outlined"
+                    sx={{ minWidth: "100%", mt: 3, mb: 3 }}
+                    value={jobDescription}
+                    onChange={(e)=> setJobDescription(e.target.value)}
+                    required
+                />
+            </Box>
+        </Box>
+            {
+                selectionVariablesList.length > 0 && (
+                    <div className="selection__variables__list">
+                        <h3>Selection Variables</h3>
+                        <ul>
+                            {
+                                selectionVariablesList.map((selectionVariable: SelectionVariable) => (
+                                    <li key={selectionVariable.name}>{selectionVariable.name} : {selectionVariable.value}</li>
+                                ))
+                            }
+                        </ul>
+                    </div>
+                )
+            }
+            <button onClick={props.handleNext} disabled={!filterOptionFilled()}>Next</button>
+            </>
     )
 }
 

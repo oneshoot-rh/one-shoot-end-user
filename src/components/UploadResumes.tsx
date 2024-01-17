@@ -210,8 +210,7 @@ const UploadResumes = () => {
   const stepsComponents = [
     UploadResumeSection(),
     <>
-      <AddSelectionFilter />
-      <button onClick={handleNext}>Next</button>
+      <AddSelectionFilter handleNext={handleNext} />
     </>,
      <>
       <p>view result _</p>
