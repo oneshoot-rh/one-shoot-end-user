@@ -15,6 +15,7 @@ import {  GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid"
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomizedSteppers from "./CustomizedStepper";
+import AddSelectionFilter from "./AddSelectionFilter";
 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -189,7 +190,10 @@ const UploadResumes = () => {
               </Fragment>
             </div>
           </div>
-          )}
+        )}
+           <button  onClick={handleNext} className="active__button">
+                    Proceed
+           </button>
           {uploadMutation.isLoading && <p>Uploading...</p>}
           {uploadMutation.isError && <p>Error uploading file(s)</p>}
       </div>
@@ -206,7 +210,7 @@ const UploadResumes = () => {
   const stepsComponents = [
     UploadResumeSection(),
     <>
-      <p>Process Resumes _</p>
+      <AddSelectionFilter />
       <button onClick={handleNext}>Next</button>
     </>,
      <>
