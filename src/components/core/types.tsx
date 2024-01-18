@@ -18,5 +18,6 @@ type SelectionVariable = {
     value: any ,
     type?: string,
     select?: Select,
-    selectRange?: SelectRange
+    selectRange?: SelectRange,
+    filled?: boolean;
 }

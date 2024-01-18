@@ -1,11 +1,13 @@
-import { Box, Checkbox, IconButton, ListItemText, OutlinedInput, TextField } from "@mui/material";
+import { Alert, AlertTitle, Box, Checkbox, FormControlLabel, FormGroup, IconButton, ListItemText, OutlinedInput, TextField } from "@mui/material";
 import { useState } from "react";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import InfoIcon from '@mui/icons-material/Info';
 import "./styles/AddSelectionFilter.css"
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -48,7 +50,7 @@ const AddSelectionFilter = (props:any) => {
             "name": "salary",
             "value": "",
             "selectRange": {
-                "unit": "MAD",
+                "unit": "MAD/Month",
                 "min": 0,
                 "max": 100000,
             }
@@ -98,6 +100,7 @@ const AddSelectionFilter = (props:any) => {
     const [jobDescription, setJobDescription] = useState<string>("")
     const [activeSelectionVariableValue, setActiveSelectionVariableValue] = useState<any>([])
     const [selectionVariablesList, setSelectionVariablesList] = useState<SelectionVariable[]>([])
+    const [useBothFilter, setUseBothFilter] = useState<boolean>(false)
     const handleChange = (event: SelectChangeEvent) => {
           setActiveSelectionVariable(event.target.value);
           console.log(event.target.value);
@@ -106,10 +109,7 @@ const AddSelectionFilter = (props:any) => {
         setActiveSelectionVariableValue(event.target.value as string[])
     }
     const changeActiveSelectionVariableValueFromSelect = (event: SelectChangeEvent<string[]>) => {
-    
         const value = event.target.value as string[];
-        console.log("debug",value);
-
         if (activeSelectionVariableValue.length === 0) {
             setActiveSelectionVariableValue(value);
         } else if (value.every((val) => activeSelectionVariableValue.includes(val))) {
@@ -141,10 +141,15 @@ const AddSelectionFilter = (props:any) => {
         console.log(selectionVariablesList);
     }
     const filterOptionFilled = () => {
-        console.log("jd", jobDescription.length < 100);
-        console.log("sv",selectionVariablesList.length <= selectionVariables.length);
         return selectionVariablesList.length >= selectionVariables.length ||
             jobDescription.length > JOB_DESCRIPTION_LENGTH_OBLIGATION; // 100 character 
+    }
+    const handleDeletFilter = (selectionVariable: SelectionVariable) => () => {       
+        // TODO: fix bug later
+        let newSelectionVariablesList = [...selectionVariablesList]
+        newSelectionVariablesList = newSelectionVariablesList.filter((selectionVariableItem: SelectionVariable) => selectionVariableItem.name !== selectionVariable.name)
+        setSelectionVariablesList(newSelectionVariablesList)
+        setSelectionVariables([...selectionVariables, selectionVariable])
     }
 
     const renderSelectionVariableInput = () => {
@@ -165,6 +170,7 @@ const AddSelectionFilter = (props:any) => {
                             input={<OutlinedInput label={activeSelectionVariable} />}
                             renderValue={(selected) => selected.join(", ")}
                             MenuProps={MenuProps}
+                            error={activeSelectionVariableValue.length == 0}
                             required
                         >
                             {selectedVariable.select.options.map((name) => (
@@ -186,6 +192,7 @@ const AddSelectionFilter = (props:any) => {
                             value={activeSelectionVariableValue}
                             label={activeSelectionVariable}
                             onChange={changeActiveSelectionVariableValue}
+                            error={activeSelectionVariableValue.length == 0}
                             required
                         >
                             {
@@ -212,6 +219,7 @@ const AddSelectionFilter = (props:any) => {
                                         max: selectedVariable.selectRange?.max
                                     }
                                 }}
+                                error={activeSelectionVariableValue.length == 0 || (selectedVariable.selectRange != null && (activeSelectionVariableValue < selectedVariable.selectRange.min || activeSelectionVariableValue > selectedVariable.selectRange.max))}
                                 onChange={changeActiveSelectionVariableValue}
                                 sx={{ m: 1, minWidth: "50%", mt: 3, mb: 3 }}
                                 required
@@ -225,15 +233,17 @@ const AddSelectionFilter = (props:any) => {
         <Box sx={{ display: "flex", justifyContent:"space-between" }}>
             <div className="selection__variables">
                 <h3>Add Selection Filter</h3>
-                <Box sx={{display: "flex"}}>
+                <Box sx={{display: "flex"}} component="form" noValidate>
                     <FormControl sx={{ m: 1, minWidth: "50%" ,mt: 3,mb:3}} >
                         <InputLabel id="demo-select-small-label">Filter</InputLabel>
-                        <Select
+                            <Select
                             labelId="demo-select-small-label"
                             id="demo-select-small"
                             value={activeSelectionVariable}
                             label={ activeSelectionVariable }
                             onChange={handleChange}
+                            error={selectionVariablesList.length === 0 && useBothFilter}
+                               
                         >
                             <MenuItem value="" disabled>
                             <em>None</em>
@@ -264,11 +274,39 @@ const AddSelectionFilter = (props:any) => {
                         )
                     }
                 </Box>
-                     
+                   {
+                selectionVariablesList.length > 0 && (
+                    <div className="selection__variables__list">
+                            {
+                                selectionVariablesList.map((selectionVariable: SelectionVariable,index) => (
+                                    //    material ui chip
+                                    <div className="selection__variable__chip" key={index}>
+                                        <span>{selectionVariable.name}</span>
+                                        <span style={{fontWeight:'500'}}>{Array.isArray(selectionVariable.value) ? selectionVariable.value.join(", ") : (selectionVariable.selectRange!=null  ? selectionVariable.value+ " "+selectionVariable.selectRange.unit : selectionVariable.value)}</span>
+                                         <IconButton aria-label="delete" size="small" color="error" onClick={handleDeletFilter(selectionVariable)} >
+                                        <RemoveCircleOutlineIcon />
+                                        </IconButton>
+                                    </div>
+                                ))
+                            }
+                    </div>
+                )
+                    }   
+                    {/* {
+                        selectionVariablesList.length === 0 && useBothFilter && (
+                            <Alert severity="warning" sx={{marginTop:"3rem"}}>
+                                <AlertTitle>Warning</AlertTitle>
+                                You have selected to use both custom filter and job description but you have not selected any custom filter yet.
+                            </Alert>
+                        )
+                    } */}
                 
             </div>
             <Box sx={{width:"50%",paddingInline:"2rem"}}>
-                <h3>Put Job Description</h3>
+                    <h3>Put Job Description</h3>
+                    <span style={{fontSize:"small"}}>
+                       <InfoIcon style={{fontSize:"small" , alignSelf:"center"}} /> Make sure to put a detailed job description in english language to get the best results.
+                    </span>
                 <TextField
                     id="outlined-multiline-static"
                     label="Job Description"
@@ -278,24 +316,22 @@ const AddSelectionFilter = (props:any) => {
                     sx={{ minWidth: "100%", mt: 3, mb: 3 }}
                     value={jobDescription}
                     onChange={(e)=> setJobDescription(e.target.value)}
-                    required
+                    required={useBothFilter}
+                    error={jobDescription.length < JOB_DESCRIPTION_LENGTH_OBLIGATION && useBothFilter}
                 />
             </Box>
-        </Box>
-            {
-                selectionVariablesList.length > 0 && (
-                    <div className="selection__variables__list">
-                        <h3>Selection Variables</h3>
-                        <ul>
-                            {
-                                selectionVariablesList.map((selectionVariable: SelectionVariable) => (
-                                    <li key={selectionVariable.name}>{selectionVariable.name} : {selectionVariable.value}</li>
-                                ))
-                            }
-                        </ul>
-                    </div>
-                )
-            }
+            </Box>
+            <FormGroup>
+                <Alert severity="info" sx={{marginTop:"3rem"}}>
+                <AlertTitle>Info</AlertTitle>
+                    Job description content will be processed using NLP and ML algorithms to extract the required information.
+                    <br /> the recommandation model will take into consideration both the job description and the custom filters if selected.
+                </Alert>
+                <FormControlLabel
+                    control={<Checkbox checked={useBothFilter} onChange={()=> setUseBothFilter(!useBothFilter)} />}
+                    label="Use both custom filter and job description"
+                />
+                </FormGroup>
             <button onClick={props.handleNext} disabled={!filterOptionFilled()}>Next</button>
             </>
     )
