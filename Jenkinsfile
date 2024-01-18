@@ -30,13 +30,12 @@ pipeline{
             when {
                 expression { BRANCH =~ /(develop)-*([a-z0-9]*)/}
             }
-            environment{
-                DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-            }
             steps{
-                bat "docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}"
-                bat "docker tag ${IMAGE}:${VERSION} ${DOCKERHUB_CREDENTIALS_USR}/${IMAGE}:${VERSION}"
-                bat "docker push ${DOCKERHUB_CREDENTIALS_USR}/${IMAGE}:${VERSION}"
+               withCredentials([string(credentialsId: 'dockerhub', variable: 'DOCKERHUB_TOKEN')]) {
+                    bat "echo \"${DOCKERHUB_TOKEN}\" | docker login --username _ --password-stdin"
+                    bat "docker tag ${IMAGE}:${VERSION} ${DOCKERHUB_CREDENTIALS_USR}/${IMAGE}:${VERSION}"
+                    bat "docker push ${DOCKERHUB_CREDENTIALS_USR}/${IMAGE}:${VERSION}"
+                }
             }
         }
         stage('Deploy'){
