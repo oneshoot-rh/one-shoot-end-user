@@ -28,7 +28,7 @@ pipeline{
         }
         stage('Push Docker Image'){
             when {
-                expression { BRANCH =~ /(devlop)-*([a-z0-9]*)/}
+                expression { BRANCH =~ /(develop)-*([a-z0-9]*)/}
             }
             steps{
                 withCredentials([string(credentialsId: 'dockerhub', variable: 'DOCKERHUB')]){
@@ -39,7 +39,7 @@ pipeline{
         }
         stage('Deploy'){
             when {
-                expression { BRANCH =~ /(devlop)-*([a-z0-9]*)/}
+                expression { BRANCH =~ /(develop)-*([a-z0-9]*)/}
             }
             steps{
                 //sh 'kubectl apply -f k8s/deployment.yaml'
