@@ -4,7 +4,7 @@ pipeline{
         NAME = 'OneShootUI'
         VERSION = '1.0.0'
         IMAGE = 'oneshootui'
-        BRANCH = 'none'
+        BRANCH = "${env.BRANCH_NAME}"
     }
 
     stages{
