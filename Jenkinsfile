@@ -31,9 +31,11 @@ pipeline{
                 expression { BRANCH =~ /(develop)-*([a-z0-9]*)/}
             }
             steps{
-               docker.withRegistry('https://hub.docker.com', 'dockerhub') {
+              script{
+                 docker.withRegistry('https://hub.docker.com', 'dockerhub') {
                     app.push("${env.BUILD_NUMBER}")
                 }   
+              }
             }
         }
         stage('Deploy'){
