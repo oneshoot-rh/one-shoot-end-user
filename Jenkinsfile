@@ -20,7 +20,7 @@ pipeline{
         }
         stage('Build Docker Image'){
             when {
-                expression { BRANCH =~ /(devlop)-*([a-z0-9]*)/}
+                expression { BRANCH =~ /(develop)-*([a-z0-9]*)/}
             }
             steps{
                 bat "docker build -t ${IMAGE}:${VERSION} ."
