@@ -4,6 +4,7 @@ pipeline{
         NAME = 'OneShootUI'
         VERSION = '1.0.0'
         IMAGE = 'oneshootui'
+        BRANCH = 'none'
     }
 
     stages{
@@ -18,11 +19,17 @@ pipeline{
             }
         }
         stage('Build Docker Image'){
+            when {
+                expression { BRANCH =~ /(devlop)-*([a-z0-9]*)/}
+            }
             steps{
                 bat "docker build -t ${IMAGE}:${VERSION} ."
             }
         }
         stage('Push Docker Image'){
+            when {
+                expression { BRANCH =~ /(devlop)-*([a-z0-9]*)/}
+            }
             steps{
                 withCredentials([string(credentialsId: 'dockerhub', variable: 'DOCKERHUB')]){
                     bat "docker login -u ${DOCKERHUB}"
@@ -31,6 +38,9 @@ pipeline{
             }
         }
         stage('Deploy'){
+            when {
+                expression { BRANCH =~ /(devlop)-*([a-z0-9]*)/}
+            }
             steps{
                 //sh 'kubectl apply -f k8s/deployment.yaml'
                 echo 'Deploying...[TODO]'
