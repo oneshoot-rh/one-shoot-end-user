@@ -110,6 +110,7 @@ const UploadResumes = () => {
   );
   const steps = [
     'Upload Resumes',
+    'Add Selection Filter',
     'Process Recommendation',
     'View Results'
   ]
@@ -211,6 +212,10 @@ const UploadResumes = () => {
     UploadResumeSection(),
     <>
       <AddSelectionFilter handleNext={handleNext} />
+    </>,
+    <>
+      <p>process recommendation _</p>
+      <button onClick={handleNext}>Next</button>
     </>,
      <>
       <p>view result _</p>

@@ -29,7 +29,7 @@
         }
         .option:hover{
             background-color: var(--color-secondary);
-            color: var(--color-primary);
+            color: var(--light-color);
         }
     }
 

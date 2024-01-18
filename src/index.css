@@ -4,7 +4,7 @@
   /* variables */
   --color-primary: #242424;
   --color-secondary: #7125d8; 
-  --color-secondary-opacity: rgba(71, 250, 122, 0.18);
+  --color-secondary-opacity: #eee5ff;
   --main-padding: 2rem;
   --main-border-size: 1.5px;
   --light-color: #2c2c2c;
@@ -39,6 +39,7 @@
     }
   }
 }
+
 
 body {
   margin: 0;

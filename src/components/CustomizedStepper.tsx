@@ -9,6 +9,7 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';import VideoLabelIcon 
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
 import Button from '@mui/material/Button';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import "./styles/CustomizedStepper.css"
@@ -67,8 +68,9 @@ function ColorlibStepIcon(props: StepIconProps) {
 
   const icons: { [index: string]: React.ReactElement } = {
     1: <CloudUploadIcon />,
-    2: <AutorenewIcon />,
-    3: <VideoLabelIcon />,
+    2: <FilterAltIcon />,
+    3: <AutorenewIcon />,
+    4: <VideoLabelIcon />,
   };
 
   return (
@@ -93,8 +95,10 @@ export default function CustomizedSteppers(props: any) {
             case 1:
                 return stepsComponents[1]
             case 2:
-                return stepsComponents[2]
-            default:
+            return stepsComponents[2]
+          case 3:
+            return stepsComponents[3]
+          default:
                 return stepsComponents[0]
         }
     }
