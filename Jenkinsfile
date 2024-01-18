@@ -31,11 +31,9 @@ pipeline{
                 expression { BRANCH =~ /(develop)-*([a-z0-9]*)/}
             }
             steps{
-               withCredentials([string(credentialsId: 'dockerhub', variable: 'DOCKERHUB_TOKEN')]) {
-                    bat "echo \"${DOCKERHUB_TOKEN}\" | docker login --username _ --password-stdin"
-                    bat "docker tag ${IMAGE}:${VERSION} ${DOCKERHUB_CREDENTIALS_USR}/${IMAGE}:${VERSION}"
-                    bat "docker push ${DOCKERHUB_CREDENTIALS_USR}/${IMAGE}:${VERSION}"
-                }
+               docker.withRegistry('https://hub.docker.com', 'dockerhub') {
+                    app.push("${env.BUILD_NUMBER}")
+                }   
             }
         }
         stage('Deploy'){
