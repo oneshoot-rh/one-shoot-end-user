@@ -18,7 +18,7 @@ background-image: url('/OneShoot.png');
         right: 5rem;
         button{
             background-color: var(--color-secondary);
-            color: var(--text-color);
+            color: var(--light-color);
             padding: 0.8rem var(--main-padding)  
         }
     }
