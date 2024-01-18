@@ -18,23 +18,30 @@ pipeline{
                 bat 'npm run test'
             }
         }
-        stage('Build Docker Image'){
+        // stage('Build Docker Image'){
+        //     when {
+        //         expression { BRANCH =~ /(develop)-*([a-z0-9]*)/}
+        //     }
+        //     steps{
+        //         bat "docker build -t ${IMAGE}:${VERSION} ."
+        //     }
+        // }
+        stage('Building and Pushing Docker Image'){
             when {
                 expression { BRANCH =~ /(develop)-*([a-z0-9]*)/}
             }
-            steps{
-                bat "docker build -t ${IMAGE}:${VERSION} ."
-            }
-        }
-        stage('Push Docker Image'){
-            when {
-                expression { BRANCH =~ /(develop)-*([a-z0-9]*)/}
+             environment {
+                registry = 'https://hub.docker.com'
+                registryCredential = 'dockerhub'
             }
             steps{
               script{
-                 docker.withRegistry('https://hub.docker.com', 'dockerhub') {
-                    app.push("${env.BUILD_NUMBER}")
-                }   
+                 // Build your Docker image
+                def app = docker.build("mounirelbakkali/myapp:${env.BUILD_NUMBER}")
+
+                docker.withRegistry(registry, registryCredential) {
+                    app.push()
+                }
               }
             }
         }
