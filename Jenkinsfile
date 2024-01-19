@@ -32,7 +32,7 @@ pipeline{
             }
              environment {
                 registry = 'https://hub.docker.com'
-                registryCredential = 'dockerhub'
+                registryCredential = 'docker-hub-up'
             }
             steps{
               script{
