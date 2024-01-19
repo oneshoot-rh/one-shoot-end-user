@@ -39,7 +39,7 @@ pipeline{
                  // Build your Docker image
                 def app = docker.build("mounirelbakkali/myapp:${env.BUILD_NUMBER}")
 
-                docker.withRegistry(registry, registryCredential) {
+                docker.withRegistry("", registryCredential) {
                     app.push()
                 }
               }
