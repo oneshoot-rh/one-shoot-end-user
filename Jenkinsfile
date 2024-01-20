@@ -41,7 +41,7 @@ pipeline{
                     echo "Release Type: ${releaseType}"
                     updateVersion(releaseType)
                     bat "git tag -a v${TAG}"
-                    bat "git push origin v${TAG}"
+                    bat "git push origin v${TAG} -m 'New Release'"
                 }
             }
         }
