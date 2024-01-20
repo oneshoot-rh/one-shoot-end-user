@@ -118,31 +118,31 @@ pipeline{
             cleanWs()
         }
     }
-    def determineReleaseType() {
-            if (env.BRANCH_NAME.endsWith('major-release')) {
-                return 'MAJOR'
-            } else if (env.BRANCH_NAME.endsWith('release')) {
-                return 'RELEASE'
-            } else if (env.BRANCH_NAME =~ /(bugfix)-*([a-z0-9]*)/ ) {
-                return 'BUGFIX'
-            } else {
-                return 'UNKNOWN'
-            }
-        }
-
-        def updateVersion(releaseType) {
-            script {
-                if (releaseType == 'MAJOR') {
-                    MAJOR_VERSION += 1
-                    MINOR_VERSION = 0
-                    PATCH_VERSION = 0
-                } else if (releaseType == 'RELEASE') {
-                    MINOR_VERSION += 1
-                    PATCH_VERSION = 0
-                } else if (releaseType == 'BUGFIX') {
-                    PATCH_VERSION += 1
-                }
-                TAG =  "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}"                
-            }
-        }
 }
+def determineReleaseType() {
+        if (env.BRANCH_NAME.endsWith('major-release')) {
+            return 'MAJOR'
+        } else if (env.BRANCH_NAME.endsWith('release')) {
+            return 'RELEASE'
+        } else if (env.BRANCH_NAME =~ /(bugfix)-*([a-z0-9]*)/ ) {
+            return 'BUGFIX'
+        } else {
+            return 'UNKNOWN'
+        }
+    }
+
+    def updateVersion(releaseType) {
+        script {
+            if (releaseType == 'MAJOR') {
+                MAJOR_VERSION += 1
+                MINOR_VERSION = 0
+                PATCH_VERSION = 0
+            } else if (releaseType == 'RELEASE') {
+                MINOR_VERSION += 1
+                PATCH_VERSION = 0
+            } else if (releaseType == 'BUGFIX') {
+                PATCH_VERSION += 1
+            }
+            TAG =  "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}"                
+        }
+    }
