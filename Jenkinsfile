@@ -34,17 +34,6 @@ pipeline{
                 bat 'npm run test'
             }
         }
-        stage('push git tag'){
-            steps{
-                script{
-                    def releaseType = determineReleaseType()
-                    echo "Release Type: ${releaseType}"
-                    updateVersion(releaseType)
-                    bat """git tag -a v${TAG} -m "New Release" """
-                    bat "git push origin v${TAG}"
-                }
-            }
-        }
         stage('Building and Pushing Docker Image'){
             stages{
                 stage("MAJOR RELEASE"){
@@ -98,6 +87,17 @@ pipeline{
                             docker.withRegistry("", registryCredential) {
                                 app.push()
                             }
+                        }
+                    }
+                }
+                stage('push git tag'){
+                    steps{
+                        script{
+                            def releaseType = determineReleaseType()
+                            echo "Release Type: ${releaseType}"
+                            updateVersion(releaseType)
+                            bat """git tag -a v${TAG} -m "New Release" """
+                            bat "git push origin v${TAG}"
                         }
                     }
                 }
