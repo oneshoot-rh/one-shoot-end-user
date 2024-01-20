@@ -40,7 +40,7 @@ pipeline{
                     def releaseType = determineReleaseType()
                     echo "Release Type: ${releaseType}"
                     updateVersion(releaseType)
-                    bat "git tag -a v${TAG} -m 'Tagging version ${TAG}'"
+                    bat "git tag -a v${TAG}"
                     bat "git push origin v${TAG}"
                 }
             }
