@@ -3,12 +3,14 @@ pipeline{
     environment{
         NAME = 'OneShootUI'
         VERSION = '1.0.0'
-        IMAGE = 'oneshootui'
+        SERVICE_NAME = 'one-shoot-ui'
         BRANCH = "${env.BRANCH_NAME}"
         TAG    = ""
         MAJOR_VERSION = 1
         MINOR_VERSION = 0
         PATCH_VERSION = 0
+        REGISTRY_CREDENTIALS = 'docker-hub-up'
+        REGISTRY_REPO_NAME = "mounirelbakkali"
     }
 
     stages{
@@ -35,81 +37,35 @@ pipeline{
             }
         }
         stage('Building and Pushing Docker Image'){
-            stages{
-                stage("MAJOR RELEASE"){
                     when {
-                        expression { BRANCH =~ /(major-release)/}
-                    }
-                    environment {
-                        registry = 'https://hub.docker.com'
-                        registryCredential = 'docker-hub-up'
+                        expression { BRANCH =~ /(major-release)/ || BRANCH =~ /(release)/ || BRANCH =~ /(bugfix)-*([a-z0-9]*)/}
                     }
                     steps{
                         script{
                             // Build your Docker image
-                            def app = docker.build("mounirelbakkali/myapp:${TAG}")
-                            docker.withRegistry("", registryCredential) {
+                            def app = docker.build("${REGISTRY_REPO_NAME}/myapp:${TAG}")
+                            docker.withRegistry("", REGISTRY_CREDENTIALS) {
                                 app.push()
                             }
-                        }
-                    }
-                }
-                stage("RELEASE"){
-                    when {
-                        expression { BRANCH =~ /(release)/}
-                    }
-                    environment {
-                        registryCredential = 'docker-hub-up'
-                    }
-                    steps{
-                        script{
-                            // Build your Docker image
-                            def app = docker.build("mounirelbakkali/myapp:${TAG}")
-
-                            docker.withRegistry("", registryCredential) {
-                                app.push()
-                            }
-                        }
-                    }
-                }
-                stage('BUG Fix'){
-                    when{
-                        expression {BRANCH =~ /(bugfix)-*([a-z0-9]*)/}
-                    }
-                    environment {
-                        registryCredential = 'docker-hub-up'
-                    }
-                    steps{
-                        script{
-                            // Build your Docker image
-                            def app = docker.build("mounirelbakkali/myapp:${TAG}")
-
-                            docker.withRegistry("", registryCredential) {
-                                app.push()
-                            }
-                        }
-                    }
-                }
-                stage('push git tag'){
-                    steps{
-                        script{
                             def releaseType = determineReleaseType()
                             echo "Release Type: ${releaseType}"
                             updateVersion(releaseType)
                             bat """git tag -a v${TAG} -m "New Release" """
                             bat "git push origin v${TAG}"
                         }
-                    }
-                }
-            }
-            
+                    }         
         }
         stage('Deploy'){
             when {
-                expression { BRANCH =~ /(release)/}
+                expression { BRANCH =~ /(major-release)/ || BRANCH =~ /(release)/ || BRANCH =~ /(bugfix)-*([a-z0-9]*)/}
             }
             steps{
-                echo 'Deploying...[TODO]'
+                script{
+                    docker.withRegistry("", REGISTRY_CREDENTIALS) {
+                        bat "docker service update --image ${REGISTRY_REPO_NAME}/myapp:${TAG} ${SERVICE_NAME}"
+                    }
+                }
+
             }
         }
         
