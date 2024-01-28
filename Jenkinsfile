@@ -42,14 +42,13 @@ pipeline{
                     }
                     steps{
                         script{
-                            // Build your Docker image
+                            def releaseType = determineReleaseType()
+                            echo "Release Type: ${releaseType}"
+                            updateVersion(releaseType)
                             def app = docker.build("${REGISTRY_REPO_NAME}/myapp:${TAG}")
                             docker.withRegistry("", REGISTRY_CREDENTIALS) {
                                 app.push()
                             }
-                            def releaseType = determineReleaseType()
-                            echo "Release Type: ${releaseType}"
-                            updateVersion(releaseType)
                             bat """git tag -a v${TAG} -m "New Release" """
                             bat "git push origin v${TAG}"
                         }
