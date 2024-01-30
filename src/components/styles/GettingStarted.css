@@ -1,0 +1,46 @@
+.flip-clock {
+  --fcc-flip-duration: 0.5s; /* transition duration when flip card */
+  --fcc-digit-block-width: 40px; /* width of digit card */
+  --fcc-digit-block-height: 60px; /* height of digit card, highly recommend in even number */
+  --fcc-digit-font-size: 30px; /* font size of digit */
+  --fcc-digit-color: white; /* color of digit */
+  --fcc-label-font-size: 10px; /* font size of label */
+  --fcc-label-color: var(--color-secondary) !important; /* color of label */
+  --fcc-background: black; /* background of digit card */
+  --fcc-divider-color: white; /* color of divider */
+  --fcc-divider-height: 1px; /* height of divider */
+  --fcc-separator-size: 6px; /* size of colon */
+  --fcc-separator-color:var(--color-secondary) !important; /* color of colon */
+}
+.box_digital_image img{
+    width: 95%;
+}
+
+
+.get__started__title{
+    width: 70%;
+}
+
+.main-title{
+    color: var(--color-secondary);
+    font-weight: 600;
+}
+
+
+.features_span{
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 1rem;
+    span{
+        color: rgb(56, 56, 183);
+        margin-right: 15px;
+    }
+    
+}
+
+.counterdown__container{
+    margin-top: 25px;
+}
