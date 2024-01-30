@@ -40,7 +40,7 @@ const ProcessRecommendation = () => {
                         <h3>Suggest Candidates</h3>
                     </div>
                     <div className="option__content">
-                        <p>I want to suggest a candidate for a specific position</p>
+                        <p>I want suggestions for candidates that match my job description</p>
                     </div>
                 </div>
             </div>
