@@ -35,7 +35,7 @@ const AddSelectionFilter = (props:any) => {
             "selectRange": {
                 "unit": "years",
                 "min": 0,
-                "max": 10
+                "max": 30
             }
         },
         {

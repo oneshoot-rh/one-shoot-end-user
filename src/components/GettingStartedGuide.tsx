@@ -5,12 +5,22 @@ import FlipClockCountdown from "@leenguyen/react-flip-clock-countdown";
 import '@leenguyen/react-flip-clock-countdown/dist/index.css';
 import "./styles/GettingStarted.css"
 import GetAppIcon from '@mui/icons-material/GetApp';
+import DemoRequestForm from "./DemoRequestForm";
+import { useState } from "react";
 
 
 const GettingStartedGuide = () => {
 
 
     const endDate = new Date("2024-03-10T00:00:00.000Z");
+    const [requestDemoClicked, setRequestDemoClicked] = useState(false);
+    const handleRequestDemo = () => {   
+        setRequestDemoClicked(true);
+        setTimeout(() => {
+            document.getElementById('container__form__request_demo')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+            
+    }
 
     return (
         <>
@@ -51,7 +61,7 @@ const GettingStartedGuide = () => {
                         </div>
                     </Box>
                     <Box sx={{ display: "flex" ,gap:"20px",marginTop:"20px" }}>
-                        <button  className="btn__call_to_action">
+                        <button  className="btn__call_to_action" onClick={handleRequestDemo}>
                             Request Demo
                         </button>
                         <button  className="btn__call_to_action__outlined" >
@@ -66,6 +76,12 @@ const GettingStartedGuide = () => {
                     </div>
                 </Box>
             </Box>
+            <Box sx={{ padding: "2rem", display:"flex" }}>
+                {/* tools description */}
+            </Box>
+            {
+                requestDemoClicked && <DemoRequestForm />
+            }
         </>    
     )
     

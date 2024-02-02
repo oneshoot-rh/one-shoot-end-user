@@ -4,7 +4,7 @@ import "./styles/Home.css";
 
 const Home = () => {
     const getStartedHandler = () => {
-        window.location.href = "/process";
+        window.location.href = "/getting-started";
     }
 
     return (
