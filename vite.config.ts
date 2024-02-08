@@ -8,10 +8,15 @@ export default defineConfig({
   server: {
     port: 3000,
     proxy: {
-      '/api': {
-        target: 'http://localhost:80',
+      'tenants': {
+        target: 'http://one_shoot_main.localhost/one-shoot-main/api/cl/', // TO be changed to target the api gateway instead
         changeOrigin: true,
       },
+      'api': {
+        target: 'http://one_shoot_main.localhost:80/oneshoot/api/',
+        changeOrigin: true,
+      }
+      
     },
   },
 })

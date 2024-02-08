@@ -10,8 +10,6 @@ import { useState } from "react";
 
 
 const GettingStartedGuide = () => {
-
-
     const endDate = new Date("2024-03-10T00:00:00.000Z");
     const [requestDemoClicked, setRequestDemoClicked] = useState(false);
     const handleRequestDemo = () => {   
@@ -20,6 +18,9 @@ const GettingStartedGuide = () => {
             document.getElementById('container__form__request_demo')?.scrollIntoView({ behavior: 'smooth' });
         }, 100);
             
+    }
+    const downloadGuide = () => {
+        window.open("/OneShoot RH Platform User Guide.pdf", "_blank");
     }
 
     return (
@@ -64,7 +65,7 @@ const GettingStartedGuide = () => {
                         <button  className="btn__call_to_action" onClick={handleRequestDemo}>
                             Request Demo
                         </button>
-                        <button  className="btn__call_to_action__outlined" >
+                        <button  className="btn__call_to_action__outlined" onClick={downloadGuide} >
                            <GetAppIcon/> Download Guide
                         </button>
                     </Box>

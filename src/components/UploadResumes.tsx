@@ -47,7 +47,7 @@ const UploadResumes = () => {
     }
   }
   const uploadMutation = useMutation(async (formData: any) => {
-    const response = await axios.post('/api/v1/upload', formData)
+    const response = await axios.post('/api/one-shoot-service/upload', formData)
     return response.data;
   })
   const someUploadSuccess = (uploadedFiles: any[]): boolean => {
