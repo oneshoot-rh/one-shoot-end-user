@@ -16,11 +16,13 @@ import StepLabel from '@mui/material/StepLabel';
 import "./styles/DemoRequest.css"
 import { render } from 'react-dom';
 import SiteNameForm from './SiteNameForm';
+import OrganizationDetailsForm from './OrganizationDetailsForm';
+import SubscriptionPlanPicker from './SubscriptionPlanPicker';
 
 
 
 
-const steps = ['Choose Site name', 'Enter your organization info', 'Check Guide'];
+const steps = ['Choose Site name', 'Enter your organization info', 'Choose a Plan'];
 
 const DemoRequestForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -75,9 +77,9 @@ const DemoRequestForm: React.FC = () => {
       case 0:
         return <SiteNameForm />
       case 1:
-        return <div>Step 22</div>
+        return <OrganizationDetailsForm />
       case 2:
-        return <div>Step 3</div>
+        return <SubscriptionPlanPicker />
       case 3:
         return <div>Step 4</div>
       default:
@@ -87,79 +89,6 @@ const DemoRequestForm: React.FC = () => {
 
   return (
     <div className='container__form__request_demo' id='container__form__request_demo'>
-      {/* <Grid container sx={{justifyContent:"center"}}>
-        <Grid item xs={10} sm={8} md={6}>
-          <Paper  elevation={3} sx={{padding:"3rem"}}>
-            <Typography variant="h5" gutterBottom>
-              Request a Demo
-            </Typography>
-            <form onSubmit={handleSubmit}>
-              <TextField
-                label="Organization Name"
-                name="organization"
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                required
-                value={formData.organization}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Your Role"
-                name="role"
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                required
-                value={formData.role}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Professional Email"
-                name="email"
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                type="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Password"
-                name="password"
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                type="password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Confirm Password"
-                name="confirmPassword"
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                type="password"
-                required
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-                style={{ marginTop: '20px' }}
-              >
-                Request Demo
-              </Button>
-            </form>
-          </Paper>
-        </Grid>
-      </Grid> */}
        <Box sx={{ width: '100%' }}>
       <Stepper activeStep={activeStep}>
         {steps.map((label, index) => {

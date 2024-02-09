@@ -139,3 +139,10 @@ button:focus-visible {
 .small__text{
     font-size: x-small;
 }
+
+.success_color{
+  color: #30d135;
+}
+.info_color{
+  color: #cad100;
+}

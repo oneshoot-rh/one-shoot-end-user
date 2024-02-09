@@ -21,3 +21,12 @@ type SelectionVariable = {
     selectRange?: SelectRange,
     filled?: boolean;
 }
+
+
+type SubscriptionPlan = {
+    id: number,
+    name: string,
+    price: string,
+    description: string,
+    features: string[],
+}

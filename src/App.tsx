@@ -3,6 +3,22 @@ import './App.css'
 import UploadResumes from './components/UploadResumes'
 import NavBar from './components/shared/NavBar'
 import AppRouter from './components/core/AppRouter'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#556cd6',
+    },
+    secondary: {
+      main: '#19857b',
+    },
+    background: {
+      default: '#fff',
+    },
+  },
+});
+
 
 function App() {
 
@@ -11,7 +27,9 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AppRouter />
+        <ThemeProvider theme={theme}>
+        <AppRouter />
+      </ThemeProvider>
     </QueryClientProvider>
   );
   

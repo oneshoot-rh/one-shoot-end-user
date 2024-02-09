@@ -4,33 +4,39 @@ import { Box, Button, FormHelperText, TextField } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
-import { useQuery, useQueryClient } from 'react-query';
-import axios from 'axios';
+import AxiosInstance from './api/AxiosInstance';
 
 
 
 const SiteNameForm = () => {
     const [siteName, setSiteName] = useState("");
-    const queryClient = useQueryClient();
-    // use react query to check if the site name is available
-       const { isLoading, error, data } = useQuery({
-        queryKey: ['availability', siteName],
-        queryFn: () =>
-            axios.get('/tenants/availability/' + siteName).then((res) => res.data),
-    });
+    const [availabilityResponse, setAvailabilityResponse] = useState("");
+    const [siteNameError, setSiteNameError] = useState(false);
 
     const handleCheckAvailability = async () => {
-        try {
-            // Use the query function to trigger the query manually
-            const result = await queryClient.fetchQuery(['availability', siteName]);
-
-            // handle the result as needed
-            console.log(result);
-        } catch (error) {
-            // handle errors
-            console.error(error);
+        AxiosInstance.get('/tenants/availability/' + siteName).then((res) => {
+            if(res.data === true){
+                setAvailabilityResponse("Available");
+            }
+            else{
+                setAvailabilityResponse("Not available");
+            }
+        }).catch((err) => {
+            console.log(err);
         }
+        );
     };
+    const handleChangeSiteName = (value: string) => {
+        // if value contains space or special characters, remove them
+        if (value.match(/[^a-zA-Z0-9]/g)?.length > 0) {
+            setSiteName(value.replace(/[^a-zA-Z0-9]/g, ''));
+            setSiteNameError(true);
+        } else {
+            setSiteName(value);
+            setSiteNameError(false);
+        }
+        setAvailabilityResponse("");
+    }
     
 
     return (
@@ -44,10 +50,18 @@ const SiteNameForm = () => {
                     aria-describedby="outlined-weight-helper-text"
                     inputProps={{
                     'aria-label': 'sitename',
-                    }}
-                    onChange={(t)=> setSiteName(t.target.value)}
+                        }}
+                    value={siteName}
+                        onChange={(t) => handleChangeSiteName(t.target.value)}
+                        onBlur={() => handleCheckAvailability()}
                     />
-                    <FormHelperText id="outlined-weight-helper-text">the name of your organization</FormHelperText>
+                    <FormHelperText id="outlined-weight-helper-text">
+                        {siteNameError === true ? (<span style={{ color: "red" }}>special character or space not allowed</span>) :
+                            (
+                                <span>the name of your organization</span>
+                        )}
+                        
+                    </FormHelperText>
 
                 </FormControl>
                 <h5>What does it mean?</h5>
@@ -61,9 +75,8 @@ const SiteNameForm = () => {
             </Box>
             <Button variant="outlined" onClick={handleCheckAvailability} size='small' sx={{marginTop:"1rem"}}>Check Availability</Button>
             {
-                isLoading === true ? <p>Loading...</p> : (
-                    data !== null ? <p>{data}</p> : <p>Not available</p>
-                )
+                availabilityResponse && <h5 className={availabilityResponse == "Available" ? "success_color" : "info_color"}>
+                    site name is: {availabilityResponse}</h5>
             }
         </Box>
     );

@@ -7,14 +7,25 @@ export default defineConfig({
   
   server: {
     port: 3000,
+    host: 'oneshoot.local',
     proxy: {
-      'tenants': {
-        target: 'http://one_shoot_main.localhost/one-shoot-main/api/cl/', // TO be changed to target the api gateway instead
-        changeOrigin: true,
+      '/tenants': {
+        target: 'http://one_shoot_main.oneshoot.local/one-shoot-main/api/cl', // TO be changed to target the api gateway instead
+        secure: false,
+        ws: true,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('Requesting: ' + req.url);
+          }
+          )
+        }
+            
       },
       'api': {
-        target: 'http://one_shoot_main.localhost:80/oneshoot/api/',
+        target: 'http://one_shoot_main.oneshoot.local:80/oneshoot/api/',
         changeOrigin: true,
+        secure: false,
+        ws: true,
       }
       
     },
