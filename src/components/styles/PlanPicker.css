@@ -1,0 +1,29 @@
+.subscription-plan-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.subscription-plan {
+  border: 1px solid #ddd;
+  padding: 16px;
+  text-align: center;
+}
+
+.selected-plan {
+  border: 2px solid #007bff; /* Change the color to match your desired selection highlight */
+}
+
+.price {
+  font-size: 1.2em;
+  color: #007bff; /* Change the color to match your desired price color */
+}
+
+button {
+  margin-top: 8px;
+  background-color: #007bff; /* Change the color to match your desired button color */
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+}
