@@ -68,7 +68,7 @@ pipeline{
         }
         stage('Building and Pushing Docker Image'){
                     when {
-                        expression { BRANCH =~ /(major-release)/ || BRANCH =~ /(release)/ || BRANCH =~ /(bugfix)-*([a-z0-9]*)/}
+                        expression { BRANCH =~ /(major-release)/ || BRANCH =~ /(release)/  || BRANCH =~ /(develop)/ || BRANCH =~ /(bugfix)-*([a-z0-9]*)/}
                     }
                     steps{
                         script{
