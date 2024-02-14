@@ -9,9 +9,7 @@ COPY vite.config.ts /app-ui/
 COPY tsconfig.json /app-ui/
 COPY tsconfig.node.json /app-ui/
 
-RUN npm install
-
-EXPOSE 3000
+RUN npm install  --legacy-peer-deps
 
 CMD [ "npm", "run","dev" ]
 
