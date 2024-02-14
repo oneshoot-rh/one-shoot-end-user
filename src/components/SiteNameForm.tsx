@@ -28,8 +28,8 @@ const SiteNameForm = () => {
     };
     const handleChangeSiteName = (value: string) => {
         // if value contains space or special characters, remove them
-        if (value.match(/[^a-zA-Z0-9]/g)?.length > 0) {
-            setSiteName(value.replace(/[^a-zA-Z0-9]/g, ''));
+        if (value.match(/[^a-zA-Z0-9_]/g)?.length > 0) {
+            setSiteName(value.replace(/[^a-zA-Z0-9_]/g, ''));
             setSiteNameError(true);
         } else {
             setSiteName(value);
