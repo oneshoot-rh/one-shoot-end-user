@@ -6,23 +6,53 @@ pipeline{
         SERVICE_NAME = 'one-shoot-ui'
         BRANCH = "${env.BRANCH_NAME}"
         TAG    = ""
+        DEPLOYENV = ""
         MAJOR_VERSION = 1
         MINOR_VERSION = 0
         PATCH_VERSION = 0
         REGISTRY_CREDENTIALS = 'docker-hub-up'
         REGISTRY_REPO_NAME = "mounirelbakkali"
+        VERSION_TRACKER_SERVER = 'http://localhost:1212/api/v1/versioning'
     }
 
     stages{
-        stage('Get Current Version') {
-            steps {
-                script {
-                    TAG  = env.GIT_BRANCH =~ /refs\/tags\/(.*)/ ? env.GIT_BRANCH[0][1] : null
-                    echo "Current Tag: ${TAG}"
-                    MAJOR_VERSION = TAG =~ /([0-9]*)\.([0-9]*)\.([0-9]*)/ ? TAG[0][1] : 1
-                    MINOR_VERSION = TAG =~ /([0-9]*)\.([0-9]*)\.([0-9]*)/ ? TAG[0][2] : 0
-                    PATCH_VERSION = TAG =~ /([0-9]*)\.([0-9]*)\.([0-9]*)/ ? TAG[0][3] : 0
-                    echo "Current Version: ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}"
+         stage('Get Current Version'){
+            parallel{
+                stage('DEV'){
+                    when{
+                        expression{
+                            return BRANCH =~ /(feature)-*([a-z0-9]*)/
+                        }
+                    }
+                    environment{
+                        DEPLOYENV = 'DEV'
+                    }
+                    steps{
+                        script{
+                            DEPLOYENV = 'DEV'
+                            final String response = bat(script: "curl -s ${VERSION_TRACKER_SERVER}/${SERVICE_NAME}/${DEPLOYENV}", returnStdout: true).trim()
+                            TAG = response.tokenize('\n').last().trim()
+                            echo "---TAG: ${TAG}"
+                        }
+                    }
+                }
+                stage('PROD'){
+                    when{
+                        expression{
+                            return BRANCH =~ /(release|bugfix)-*([a-z0-9]*)/ || BRANCH == 'develop'
+                        }
+                    }
+                    environment{
+                        DEPLOYENV = 'PROD'
+                    }
+                    steps{
+                        script{
+                            DEPLOYENV = 'PROD'
+                            final String response = bat(script: "curl -s ${VERSION_TRACKER_SERVER}/${SERVICE_NAME}/${DEPLOYENV}", returnStdout: true).trim()
+                            TAG = response.tokenize('\n').last().trim()
+                            echo "---TAG: ${TAG}"
+                        }
+                    }
                 }
             }
         }
@@ -44,15 +74,22 @@ pipeline{
                         script{
                             def releaseType = determineReleaseType()
                             echo "Release Type: ${releaseType}"
-                            updateVersion(releaseType)
-                            def app = docker.build("${REGISTRY_REPO_NAME}/myapp:${TAG}")
+                            def app = docker.build("${REGISTRY_REPO_NAME}/${SERVICE_NAME}:${TAG}")
                             docker.withRegistry("", REGISTRY_CREDENTIALS) {
                                 app.push()
                             }
-                            bat """git tag -a v${TAG} -m "New Release" """
-                            bat "git push origin v${TAG}"
+                            // bat """git tag -a v${TAG} -m "New Release" """
+                            // bat "git push origin v${TAG}"
                         }
                     }         
+        }
+         stage("Update Version"){
+            steps{
+                script{
+                    def releaseType = determineReleaseType()
+                    bat """curl -X POST -H \"Content-Type: application/json\" -d \"{\\\"serviceName\\\":\\\"${SERVICE_NAME}\\\",\\\"deploymentEnv\\\":\\\"${DEPLOYENV}\\\",\\\"versionPart\\\":\\\"${releaseType}\\\"}\" http://localhost:1212/api/v1/versioning"""        
+                }
+            }
         }
         stage('Deploy'){
             when {
@@ -61,7 +98,7 @@ pipeline{
             steps{
                 script{
                     docker.withRegistry("", REGISTRY_CREDENTIALS) {
-                        bat "docker service update --image ${REGISTRY_REPO_NAME}/myapp:${TAG} ${SERVICE_NAME}"
+                        //bat "docker service update --image ${REGISTRY_REPO_NAME}/myapp:${TAG} ${SERVICE_NAME}"
                     }
                 }
 
@@ -78,27 +115,11 @@ pipeline{
 def determineReleaseType() {
         if (env.BRANCH_NAME.endsWith('major-release')) {
             return 'MAJOR'
-        } else if (env.BRANCH_NAME.endsWith('release')) {
-            return 'RELEASE'
+        } else if (env.BRANCH_NAME.endsWith('release') || env.BRANCH_NAME == 'develop') {
+            return 'MINOR'
         } else if (env.BRANCH_NAME =~ /(bugfix)-*([a-z0-9]*)/ ) {
-            return 'BUGFIX'
+            return 'PATCH'
         } else {
             return 'UNKNOWN'
-        }
-    }
-
-    def updateVersion(releaseType) {
-        script {
-            if (releaseType == 'MAJOR') {
-                MAJOR_VERSION += 1
-                MINOR_VERSION = 0
-                PATCH_VERSION = 0
-            } else if (releaseType == 'RELEASE') {
-                MINOR_VERSION += 1
-                PATCH_VERSION = 0
-            } else if (releaseType == 'BUGFIX') {
-                PATCH_VERSION += 1
-            }
-            TAG =  "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}"                
         }
     }
