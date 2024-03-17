@@ -10,8 +10,9 @@ export default defineConfig({
     host: 'oneshoot.local',
     proxy: {
       '/tenants': {
-        target: 'http://one_shoot_main.oneshoot.local/one-shoot-main/api/cl', // TO be changed to target the api gateway instead
+        target: 'http://one_shoot_main.oneshoot.local:80//one-shoot-main/api/cl/', 
         secure: false,
+        changeOrigin: true,
         ws: true,
         configure: (proxy) => {
           proxy.on('proxyReq', (proxyReq, req, res) => {
@@ -21,13 +22,12 @@ export default defineConfig({
         }
             
       },
-      'api': {
-        target: 'http://one_shoot_main.oneshoot.local:80/oneshoot/api/',
+      '/api': {
+        target: 'http://org1710248699666.oneshoot.local:80//one-shoot-main/',
         changeOrigin: true,
         secure: false,
         ws: true,
       }
-      
     },
   },
 })

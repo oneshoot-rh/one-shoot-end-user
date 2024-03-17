@@ -1,4 +1,5 @@
 
+import { callAPI } from "../helpers/axios_helper";
 import "./styles/Home.css";
 
 
@@ -6,6 +7,12 @@ const Home = () => {
     const getStartedHandler = () => {
         window.location.href = "/getting-started";
     }
+
+    callAPI().then((response) => {
+        console.log(response);
+    }).catch((error) => {
+        console.log(error);
+    });
 
     return (
         <div className="home">
