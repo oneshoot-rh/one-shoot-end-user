@@ -101,6 +101,7 @@ const AddSelectionFilter = (props:any) => {
     const [activeSelectionVariableValue, setActiveSelectionVariableValue] = useState<any>([])
     const [selectionVariablesList, setSelectionVariablesList] = useState<SelectionVariable[]>([])
     const [useBothFilter, setUseBothFilter] = useState<boolean>(false)
+    const [saveJobOffer, setSaveJobOffer] = useState<boolean>(false)
     const handleChange = (event: SelectChangeEvent) => {
           setActiveSelectionVariable(event.target.value);
           console.log(event.target.value);
@@ -302,6 +303,7 @@ const AddSelectionFilter = (props:any) => {
                     } */}
                 
             </div>
+        
             <Box sx={{width:"50%",paddingInline:"2rem"}}>
                     <h3>Put Job Description</h3>
                     <span style={{fontSize:"small"}}>
@@ -330,6 +332,10 @@ const AddSelectionFilter = (props:any) => {
                 <FormControlLabel
                     control={<Checkbox checked={useBothFilter} onChange={()=> setUseBothFilter(!useBothFilter)} />}
                     label="Use both custom filter and job description"
+                />
+                 <FormControlLabel
+                    control={<Checkbox checked={saveJobOffer} onChange={()=> setSaveJobOffer(!saveJobOffer)} />}
+                    label="Save Job Offer info for later use"
                 />
                 </FormGroup>
             <button onClick={props.handleNext} disabled={!filterOptionFilled()}>Next</button>
