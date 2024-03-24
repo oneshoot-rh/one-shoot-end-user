@@ -9,18 +9,16 @@ export default defineConfig({
     port: 3000,
     host: 'oneshoot.local',
     proxy: {
-      '/tenants': {
-        target: 'http://one_shoot_main.oneshoot.local:80//one-shoot-main/api/cl/', 
+      '/cl': {
+        target: 'http://oneshootmain.oneshoot.local:80//one-shoot-main/api/', 
         secure: false,
         changeOrigin: true,
         ws: true,
         configure: (proxy) => {
           proxy.on('proxyReq', (proxyReq, req, res) => {
             console.log('Requesting: ' + req.url);
-          }
-          )
-        }
-            
+          })
+        }    
       },
       '/api': {
         target: 'http://org1710248699666.oneshoot.local:80//one-shoot-main/',
