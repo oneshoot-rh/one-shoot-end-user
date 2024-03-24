@@ -8,13 +8,14 @@ import AxiosInstance from './api/AxiosInstance';
 
 
 
-const SiteNameForm = () => {
+const SiteNameForm = ({onDomainChoosen}) => {
     const [siteName, setSiteName] = useState("");
     const [availabilityResponse, setAvailabilityResponse] = useState("");
     const [siteNameError, setSiteNameError] = useState(false);
+    const [selectedDomain, setSelectedDomain] = useState("");
 
     const handleCheckAvailability = async () => {
-        AxiosInstance.get('/tenants/availability/' + siteName).then((res) => {
+        AxiosInstance.get('/cl/tenants/availability/' + siteName).then((res) => {
             if(res.data === true){
                 setAvailabilityResponse("Available");
             }
@@ -38,6 +39,14 @@ const SiteNameForm = () => {
         setAvailabilityResponse("");
     }
     
+
+    function chooseDomain(){
+        if(availabilityResponse === "Available"){
+            console.log("Domain name selected");
+            setSelectedDomain(siteName);
+            onDomainChoosen(siteName);
+    }
+    }
 
     return (
         <Box sx={{marginBlock:"3rem"}}>
@@ -73,10 +82,13 @@ const SiteNameForm = () => {
                     <li>It will represent the whole workspace, database name and email domain</li>
                 </ul>
             </Box>
-            <Button variant="outlined" onClick={handleCheckAvailability} size='small' sx={{marginTop:"1rem"}}>Check Availability</Button>
             {
                 availabilityResponse && <h5 className={availabilityResponse == "Available" ? "success_color" : "info_color"}>
                     site name is: {availabilityResponse}</h5>
+            }
+            <Button variant="outlined" onClick={handleCheckAvailability} size='small' sx={{marginTop:"1rem"}}>Check Availability</Button>
+            {
+                availabilityResponse === "Available" && <Button variant="contained" onClick={chooseDomain} size='small' sx={{marginTop:"1rem", marginLeft:"1rem"}}>Choose Domain</Button>
             }
         </Box>
     );

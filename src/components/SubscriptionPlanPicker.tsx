@@ -18,12 +18,12 @@ const useStyles = makeStyles((theme:Theme) => ({
   },
 }));
 
-const SubscriptionPlanPicker = () => {
+const SubscriptionPlanPicker = ({onSubscriptionPlanChoosen}) => {
   const classes = useStyles();
 
   const subscriptionPlans : SubscriptionPlan[] = [
       {
-          id: 1, name: 'Basic Plan', description: 'Access to basic features', price: '$10/month',
+          id: 1, name: 'Basic Plan',type:"BASIC", description: 'Access to basic features', price: '$10/month',
           features: [
                 'Feature 1',
                 'Feature 2',
@@ -31,7 +31,7 @@ const SubscriptionPlanPicker = () => {
           ]
       },
         {
-            id: 2, name: 'Pro Plan', description: 'Access to pro features', price: '$20/month',
+            id: 2, name: 'Pro Plan',type:"PROFESSIONAL", description: 'Access to pro features', price: '$20/month',
             features: [
                     'Feature 1',
                     'Feature 2',
@@ -41,7 +41,7 @@ const SubscriptionPlanPicker = () => {
             ]
         },
         {
-            id: 3, name: 'Enterprise Plan', description: 'Access to enterprise features', price: '$50/month',
+            id: 3, name: 'Enterprise Plan',type:"ENTREPRISE", description: 'Access to enterprise features', price: '$50/month',
             features: [
                     'Feature 1',
                     'Feature 2',
@@ -58,12 +58,12 @@ const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>(subscriptionP
 
   const handlePlanSelect = (plan: SubscriptionPlan) => {
       setSelectedPlan(plan);
-      console.log('Selected Plan:', plan);
-      
+      onSubscriptionPlanChoosen(plan.type);
   };
 
   return (
     <div className={classes.root}>
+      <h4>Choose A Plan may interest you</h4>
       <Grid container spacing={3} p="3rem">
         {subscriptionPlans.map((plan) => (
           <Grid item key={plan.id} xs={12} sm={6} md={4} lg={4}>

@@ -18,6 +18,7 @@ import { render } from 'react-dom';
 import SiteNameForm from './SiteNameForm';
 import OrganizationDetailsForm from './OrganizationDetailsForm';
 import SubscriptionPlanPicker from './SubscriptionPlanPicker';
+import AxiosInstance from './api/AxiosInstance';
 
 
 
@@ -25,24 +26,15 @@ import SubscriptionPlanPicker from './SubscriptionPlanPicker';
 const steps = ['Choose Site name', 'Enter your organization info', 'Choose a Plan'];
 
 const DemoRequestForm: React.FC = () => {
-  const [formData, setFormData] = useState({
-    organization: '',
-    role: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+  let [formData, setFormData] = useState<RequestDemoObj>({
+    organizationName: '',
+    requestorRole: '',
+    requestorProfessionalEmail: '',
+    requestorName: '',
+    requestorTemporaryPassword: '',
+    requestorTemporaryPasswordConfirm: '',
+    subscriptionType: '',
   });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission logic here
-    console.log('Form submitted with data:', formData);
-  };
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
@@ -69,17 +61,46 @@ const DemoRequestForm: React.FC = () => {
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
+  // called first
+  const handleSetDomainName = (value: string) => {
+    const merged = { ...formData, domainName: value };
+    console.log(merged);
+    setFormData(merged);
+    handleNext();
+  }
 
-
+  // called second
+  const handleOrganizationDetailsFormFilled = (data: RequestDemoObj) => {
+    const merged = { ...formData, ...data };
+    console.log(merged);
+    setFormData(merged);
+    handleNext();
+  }
+  // called third
+  const handleSubscriptionPlanChoosen = (value: string) => {
+    const merged = { ...formData, subscriptionType: value };
+    console.log(merged);
+    setFormData(merged);
+    handleNext();   
+  }
+  const callApi = () => {
+    setTimeout(() => {
+      AxiosInstance.post('/cl/subscriptions/subscribe?isDemo=true', formData).then((response) => {
+        console.log(response);
+      }).catch((error) => {
+        console.error(error);
+      });
+    },1000);
+  }
 
   function renderStep(activeStep: number): React.ReactNode {
     switch (activeStep) {
       case 0:
-        return <SiteNameForm />
+        return <SiteNameForm  onDomainChoosen={handleSetDomainName}/>
       case 1:
-        return <OrganizationDetailsForm />
+        return <OrganizationDetailsForm onFormFilled={handleOrganizationDetailsFormFilled}/>
       case 2:
-        return <SubscriptionPlanPicker />
+        return <SubscriptionPlanPicker onSubscriptionPlanChoosen={handleSubscriptionPlanChoosen} />
       case 3:
         return <div>Step 4</div>
       default:
@@ -113,9 +134,43 @@ const DemoRequestForm: React.FC = () => {
       </Stepper>
       {activeStep === steps.length ? (
         <React.Fragment>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            All steps completed - you&apos;re finished
+          <Typography sx={{ mt: 2, mb: 3 }}>
+            Almost done! Please review your details and click submit.
           </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2,justifyContent:'space-between',mb:3 }}>
+            <Box>
+              <Typography sx={{mb:2}}  variant="h6"  gutterBottom>
+                Organization Information
+              </Typography>
+              <Typography  sx={{mb:2}} variant="body1" gutterBottom>
+               Organization Name: <strong>{formData.organizationName}</strong>
+              </Typography>
+              <Typography  sx={{mb:2}} variant="body1" gutterBottom>
+               Domain name: <strong>{formData.organizationName}</strong>
+              </Typography>
+              <Typography  sx={{mb:2}} variant="body1" gutterBottom>
+                Your Role:
+                <strong>{formData.requestorRole}</strong>
+              </Typography>
+              <Typography  sx={{mb:2}} variant="body1" gutterBottom>
+                Your Email: <strong>{formData.requestorProfessionalEmail}</strong> 
+              </Typography>
+              <Typography  sx={{mb:2}} variant="body1" gutterBottom>
+                Your Name: <strong>{formData.requestorName}</strong>
+              </Typography>
+            </Box>
+            <Box>
+              <Typography  sx={{mb:2}} variant="h6" gutterBottom>
+                Subscription Plan
+              </Typography>
+              <Typography  sx={{mb:2}} variant="body1" gutterBottom>
+                <strong>{formData.subscriptionType}</strong>
+              </Typography>
+            </Box>
+          </Box>
+          <Button  onClick={callApi}>
+            Submit
+          </Button>
         </React.Fragment>
       ) : (
             <React.Fragment >
@@ -133,9 +188,9 @@ const DemoRequestForm: React.FC = () => {
                   Back
                 </Button>
                 <Box sx={{ flex: '1 1 auto' }} />
-                <Button onClick={handleNext}>
+                {/* <Button onClick={handleNext}>
                   {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
-                </Button>
+                </Button> */}
               </Box>
               </Box>
             

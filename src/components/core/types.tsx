@@ -26,7 +26,20 @@ type SelectionVariable = {
 type SubscriptionPlan = {
     id: number,
     name: string,
+    type?: string,
     price: string,
     description: string,
     features: string[],
+}
+
+
+type RequestDemoObj = {
+    organizationName: string,
+    requestorRole: string,
+    domainName?: string,
+    requestorName: string,
+    requestorProfessionalEmail: string,
+    requestorTemporaryPassword: string,
+    requestorTemporaryPasswordConfirm: string,
+    subscriptionType?: string
 }
