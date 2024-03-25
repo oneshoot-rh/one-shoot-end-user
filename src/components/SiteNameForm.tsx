@@ -15,7 +15,7 @@ const SiteNameForm = ({onDomainChoosen}) => {
     const [selectedDomain, setSelectedDomain] = useState("");
 
     const handleCheckAvailability = async () => {
-        AxiosInstance.get('/cl/tenants/availability/' + siteName).then((res) => {
+        AxiosInstance.get('/tenantService/api/cl/tenants/availability/' + siteName).then((res) => {
             if(res.data === true){
                 setAvailabilityResponse("Available");
             }
@@ -57,6 +57,7 @@ const SiteNameForm = ({onDomainChoosen}) => {
                     id="outlined-adornment-weight"
                     endAdornment={<InputAdornment position="end">.oneshoot.com</InputAdornment>}
                     aria-describedby="outlined-weight-helper-text"
+                    autoComplete='off'
                     inputProps={{
                     'aria-label': 'sitename',
                         }}

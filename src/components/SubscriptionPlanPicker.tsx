@@ -58,7 +58,7 @@ const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>(subscriptionP
 
   const handlePlanSelect = (plan: SubscriptionPlan) => {
       setSelectedPlan(plan);
-      onSubscriptionPlanChoosen(plan.type);
+      onSubscriptionPlanChoosen(plan);
   };
 
   return (

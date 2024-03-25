@@ -16,6 +16,7 @@ import { DataGrid } from "@mui/x-data-grid"
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomizedSteppers from "./CustomizedStepper";
 import AddSelectionFilter from "./AddSelectionFilter";
+import AxiosInstance from "./api/AxiosInstance";
 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -47,7 +48,11 @@ const UploadResumes = () => {
     }
   }
   const uploadMutation = useMutation(async (formData: any) => {
-    const response = await axios.post('/api/one-shoot-service/upload', formData)
+    const response = await AxiosInstance.post('/onboarding/upload', formData,{
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
     return response.data;
   })
   const someUploadSuccess = (uploadedFiles: any[]): boolean => {

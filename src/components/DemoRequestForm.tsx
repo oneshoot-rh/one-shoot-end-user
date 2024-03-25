@@ -11,8 +11,7 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-
-
+import { ToastContainer, toast } from 'react-toastify';
 import "./styles/DemoRequest.css"
 import { render } from 'react-dom';
 import SiteNameForm from './SiteNameForm';
@@ -26,6 +25,8 @@ import AxiosInstance from './api/AxiosInstance';
 const steps = ['Choose Site name', 'Enter your organization info', 'Choose a Plan'];
 
 const DemoRequestForm: React.FC = () => {
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [planChoosen , setPlanChoosen] = useState<SubscriptionPlan>({} as SubscriptionPlan);
   let [formData, setFormData] = useState<RequestDemoObj>({
     organizationName: '',
     requestorRole: '',
@@ -77,20 +78,31 @@ const DemoRequestForm: React.FC = () => {
     handleNext();
   }
   // called third
-  const handleSubscriptionPlanChoosen = (value: string) => {
-    const merged = { ...formData, subscriptionType: value };
+  const handleSubscriptionPlanChoosen = (plan: SubscriptionPlan) => {
+    const merged = { ...formData, subscriptionType: plan.type };
     console.log(merged);
     setFormData(merged);
+    setPlanChoosen(plan);
     handleNext();   
   }
   const callApi = () => {
-    setTimeout(() => {
-      AxiosInstance.post('/cl/subscriptions/subscribe?isDemo=true', formData).then((response) => {
-        console.log(response);
-      }).catch((error) => {
-        console.error(error);
-      });
-    },1000);
+    // disable submit button
+    setFormSubmitted(true);
+    AxiosInstance.post('/tenantService/cl/subscriptions/subscribe?isDemo=true', formData).then((response) => {
+      console.log(response);
+      toast.success('Request submitted successfully Please check your email for further instructions');
+    }).catch((error) => {
+      console.error(error);
+      toast.error('Somthing went wrong! Please try again.');
+      // go to email in alert   
+      // open gmail in new window 
+      setTimeout(() => {
+        const response = confirm("Open Gmail to check email?");
+        if (response) {
+          window.open('https://mail.google.com/mail/u/0/#inbox', '_blank');
+        }
+      },2000);
+    });
   }
 
   function renderStep(activeStep: number): React.ReactNode {
@@ -110,6 +122,7 @@ const DemoRequestForm: React.FC = () => {
 
   return (
     <div className='container__form__request_demo' id='container__form__request_demo'>
+      <ToastContainer position="top-right" />
        <Box sx={{ width: '100%' }}>
       <Stepper activeStep={activeStep}>
         {steps.map((label, index) => {
@@ -137,8 +150,8 @@ const DemoRequestForm: React.FC = () => {
           <Typography sx={{ mt: 2, mb: 3 }}>
             Almost done! Please review your details and click submit.
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2,justifyContent:'space-between',mb:3 }}>
-            <Box>
+          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 5,justifyContent:'space-between',mb:5 }}>
+            <Box sx={{flex:1}}>
               <Typography sx={{mb:2}}  variant="h6"  gutterBottom>
                 Organization Information
               </Typography>
@@ -146,7 +159,7 @@ const DemoRequestForm: React.FC = () => {
                Organization Name: <strong>{formData.organizationName}</strong>
               </Typography>
               <Typography  sx={{mb:2}} variant="body1" gutterBottom>
-               Domain name: <strong>{formData.organizationName}</strong>
+               Domain name: <strong>{formData.domainName}.oneshoot.com</strong>
               </Typography>
               <Typography  sx={{mb:2}} variant="body1" gutterBottom>
                 Your Role:
@@ -159,16 +172,28 @@ const DemoRequestForm: React.FC = () => {
                 Your Name: <strong>{formData.requestorName}</strong>
               </Typography>
             </Box>
-            <Box>
+            <Box sx={{flex:1}}>
               <Typography  sx={{mb:2}} variant="h6" gutterBottom>
                 Subscription Plan
               </Typography>
               <Typography  sx={{mb:2}} variant="body1" gutterBottom>
                 <strong>{formData.subscriptionType}</strong>
               </Typography>
+              <Typography  sx={{mb:2}} variant="body1" gutterBottom>
+                <strong>{planChoosen.price}</strong>
+              </Typography>
+              <Box >
+                <ul>
+                  {
+                    planChoosen.features.map((feature) => (
+                      <li key={feature}>{feature}</li>
+                    ))
+                  }
+                </ul>
+                </Box>
             </Box>
           </Box>
-          <Button  onClick={callApi}>
+          <Button variant="contained" color="primary"  onClick={callApi}>
             Submit
           </Button>
         </React.Fragment>

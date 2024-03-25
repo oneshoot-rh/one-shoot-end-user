@@ -36,6 +36,7 @@ const OrganizationDetailsForm = ({onFormFilled}) => {
                   name="organizationName"
                   fullWidth
                   margin="normal"
+                  autoComplete="organization"
                   variant="outlined"
                   required
                   value={formData.organizationName}
@@ -45,6 +46,7 @@ const OrganizationDetailsForm = ({onFormFilled}) => {
                 <TextField
                   label="Your Role"
                   name="requestorRole"
+                  autoComplete="role"
                   fullWidth
                   margin="normal"
                   variant="outlined"
@@ -54,8 +56,9 @@ const OrganizationDetailsForm = ({onFormFilled}) => {
                           size="small"
                 />
                 <TextField
-                  label="Your Role"
+                  label="Your Name"
                   name="requestorName"
+                  autoComplete="name"
                   fullWidth
                   margin="normal"
                   variant="outlined"

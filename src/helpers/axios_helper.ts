@@ -11,7 +11,7 @@ const _callAPI = (token:any) => {
         Accept: 'application/json',
         Authorization: `Bearer ${token}`
     };
-    return axios.get('/api/cl/uploads', { headers })
+    return axios.get('/onboarding/cl/uploads', { headers })
 }
 
 

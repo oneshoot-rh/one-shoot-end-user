@@ -9,8 +9,8 @@ export default defineConfig({
     port: 3000,
     host: 'oneshoot.local',
     proxy: {
-      '/cl': {
-        target: 'http://oneshootmain.oneshoot.local:80//one-shoot-main/api/', 
+      '/tenantService': {
+        target: 'http://tenantService.oneshoot.local:80//', 
         secure: false,
         changeOrigin: true,
         ws: true,
@@ -20,8 +20,8 @@ export default defineConfig({
           })
         }    
       },
-      '/api': {
-        target: 'http://org1710248699666.oneshoot.local:80//one-shoot-main/',
+      '/onboarding': {
+        target: 'http://org1710248699666.oneshoot.local:80//',
         changeOrigin: true,
         secure: false,
         ws: true,

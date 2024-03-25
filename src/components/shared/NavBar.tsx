@@ -38,11 +38,9 @@ const NavBar = () => {
             <div className="navbar__links">
                 <div>
                     <Link to="/">Home</Link>
-                    <Link to="/Process">Process</Link>
+                   
                 </div>
-                <div>
-                    <Link to="http://localhost:4200">EOnboard</Link>
-                </div>
+                
                 {
                     !isLoggedIn && (
                         <div>
@@ -52,9 +50,17 @@ const NavBar = () => {
                 }
                 {
                     isLoggedIn && (
+                       <>
+                         <div>
+                             <Link to="/Process">Process</Link>
+                        </div>
+                        <div>
+                            <Link to="http://localhost:4200">EOnboard</Link>
+                        </div>
                         <div>
                             <Button onClick={performLogout}>Logout</Button>
                         </div>
+                       </>
                     )
                 }
                
