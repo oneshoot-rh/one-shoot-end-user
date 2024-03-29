@@ -10,7 +10,8 @@ const settings = {
     response_type: "code",
     scope: "openid profile uploads.read",
     post_logout_redirect_uri: "http://localhost:3000",
-    onload: "login-required"
+    onload: "login-required",
+    refreshTokenAllowedScope: "offline_access",
 };
 
 const userManager = new UserManager(settings);

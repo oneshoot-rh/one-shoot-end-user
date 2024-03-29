@@ -17,6 +17,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CustomizedSteppers from "./CustomizedStepper";
 import AddSelectionFilter from "./AddSelectionFilter";
 import AxiosInstance from "./api/AxiosInstance";
+import RecommendationLoader from "./RecommendationLoader";
 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -34,6 +35,7 @@ const UploadResumes = () => {
   const [deleteUploadedFromServerDialogShown, setDeleteUploadedFromServerDialogShown] = useState(false);
   const [fileList, setFileList] = useState<FileList | null>(null)
   const [resp, setResp] = useState<any>()
+  const [recommendationLabel, setRecommendationLabel] = useState<string>("Process Recommendation...")
   const [showUploadSection, setShowUploadSection] = useState(true)
   const columns = [
     { field: 'fileName', headerName: 'File Name', width: 200 },
@@ -48,7 +50,7 @@ const UploadResumes = () => {
     }
   }
   const uploadMutation = useMutation(async (formData: any) => {
-    const response = await AxiosInstance.post('/onboarding/upload', formData,{
+    const response = await AxiosInstance.post('/onboarding/api/upload', formData,{
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -68,6 +70,23 @@ const UploadResumes = () => {
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   }
+  const handleSubmitFilters = (data:any) => {
+    data.candidateData = JSON.parse(localStorage.getItem("candidateData"));
+    console.log("submitted ",data)
+    AxiosInstance.post('/onboarding/api/v1/filtering', data).then((res) => {
+      console.log(res.data)
+      handleNext()
+      setTimeout(() => {
+        handleNext()
+      }, 5000);
+      setTimeout(() => {
+        setRecommendationLabel("Ready!")
+      }, 4000);
+    }).catch((err) => {
+      console.log(err)
+    })
+    
+  }
 
   const files = fileList ? [...fileList] : []
   const handleUploadClick = async () => {
@@ -81,6 +100,9 @@ const UploadResumes = () => {
         await uploadMutation.mutateAsync(formData)
           .then((data) => {
             console.log(data);
+            console.log("setting data to local storage");
+            localStorage.setItem('candidateData', JSON.stringify(data.candidateData))
+            console.log(localStorage.getItem('candidateData'));
             setResp(data)
             if (someUploadSuccess(data.uploadedFiles)) {
               setShowUploadSection(false)
@@ -197,9 +219,9 @@ const UploadResumes = () => {
             </div>
           </div>
         )}
-           <button  onClick={handleNext} className="active__button">
+           {/* <button  onClick={handleNext} className="active__button">
                     Proceed
-           </button>
+           </button> */}
           {uploadMutation.isLoading && <p>Uploading...</p>}
           {uploadMutation.isError && <p>Error uploading file(s)</p>}
       </div>
@@ -216,10 +238,10 @@ const UploadResumes = () => {
   const stepsComponents = [
     UploadResumeSection(),
     <>
-      <AddSelectionFilter handleNext={handleNext} />
+      <AddSelectionFilter onSelectionFilterSubmitted={handleSubmitFilters} />
     </>,
     <>
-      <p>process recommendation _</p>
+      <RecommendationLoader label={recommendationLabel} />
       <button onClick={handleNext}>Next</button>
     </>,
      <>

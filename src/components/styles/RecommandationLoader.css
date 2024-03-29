@@ -1,0 +1,11 @@
+
+
+.recommendation-loader{
+    display: flex;
+    justify-content: center;
+    flex-direction: row-reverse;
+    padding: 0 10rem;
+    .left{
+        font-size: x-large;
+    }
+}

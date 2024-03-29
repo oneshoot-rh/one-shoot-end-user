@@ -21,56 +21,58 @@ const MenuProps = {
 };
 const JOB_DESCRIPTION_LENGTH_OBLIGATION = 100
 
-const AddSelectionFilter = (props:any) => {
+const AddSelectionFilter = ({onSelectionFilterSubmitted}) => {
+
+
 
 
     const [selectionVariables , setSelectionVariables] = useState<SelectionVariable[]>([
-        {
-            "name": "title",
-            "value": ""
-        },
-        {
-            "name": "experience",
-            "value": "",
-            "selectRange": {
-                "unit": "years",
-                "min": 0,
-                "max": 30
-            }
-        },
-        {
-            "name": "location",
-            "value": "",
-            "select": {
-                "type": "multiple",
-                "options": ["Morocco","France","USA"]
-            }
-        },
-        {
-            "name": "salary",
-            "value": "",
-            "selectRange": {
-                "unit": "MAD/Month",
-                "min": 0,
-                "max": 100000,
-            }
-        },
-        {
-            "name": "contractType",
-            "value": "",
-            "select": {
-                "type": "multiple",
-                "options": ["Full Time","Part Time","Internship","Contract","Freelance"]
-            }
-        },
-        {
-            "name": "industry",
-            "value": "",
-            "select": {
-                "type": "multiple",
-                "options": ["IT","Finance","Marketing"]
-            }
-        },
+        // {
+        //     "name": "title",
+        //     "value": ""
+        // },
+        // {
+        //     "name": "experience",
+        //     "value": "",
+        //     "selectRange": {
+        //         "unit": "years",
+        //         "min": 0,
+        //         "max": 30
+        //     }
+        // },
+        // {
+        //     "name": "location",
+        //     "value": "",
+        //     "select": {
+        //         "type": "multiple",
+        //         "options": ["Morocco","France","USA"]
+        //     }
+        // },
+        // {
+        //     "name": "salary",
+        //     "value": "",
+        //     "selectRange": {
+        //         "unit": "MAD/Month",
+        //         "min": 0,
+        //         "max": 100000,
+        //     }
+        // },
+        // {
+        //     "name": "contractType",
+        //     "value": "",
+        //     "select": {
+        //         "type": "multiple",
+        //         "options": ["Full Time","Part Time","Internship","Contract","Freelance"]
+        //     }
+        // },
+        // {
+        //     "name": "industry",
+        //     "value": "",
+        //     "select": {
+        //         "type": "multiple",
+        //         "options": ["IT","Finance","Marketing"]
+        //     }
+        // },
         {
             "name": "skills",
             "value": "",   // comma separated list
@@ -79,22 +81,22 @@ const AddSelectionFilter = (props:any) => {
                 "options": ["Java","Spring Boot","React","NodeJS","Express","MongoDB"]
             }
         },
-        {
-            "name": "degreeRequired",
-            "value": "",
-            "select": {
-                "type": "single",
-                "options": ["None","Bachelor","Master","PhD"]
-            }
-        },
-        {
-            "name": "tools",
-            "value": "",   // comma separated list
-            "select": {
-                "type": "multiple",
-                "options": ["Git","Jira","Docker","Kubernetes","Jenkins","AWS"]
-            }
-        }
+        // {
+        //     "name": "degreeRequired",
+        //     "value": "",
+        //     "select": {
+        //         "type": "single",
+        //         "options": ["None","Bachelor","Master","PhD"]
+        //     }
+        // },
+        // {
+        //     "name": "tools",
+        //     "value": "",   // comma separated list
+        //     "select": {
+        //         "type": "multiple",
+        //         "options": ["Git","Jira","Docker","Kubernetes","Jenkins","AWS"]
+        //     }
+        // }
     ])
     const [activeSelectionVariable, setActiveSelectionVariable] = useState<string>("")
     const [jobDescription, setJobDescription] = useState<string>("")
@@ -229,6 +231,22 @@ const AddSelectionFilter = (props:any) => {
     
 
     
+    const handleSubmit = ()=> {
+        const filters = [
+            {
+                filterKey: "Top Skills",
+                filterValue: selectionVariablesList[0].value.join(", ")
+            }
+        ];
+        const data ={
+            filters: filters,
+            jobDescription: jobDescription,
+            useBothFilter: useBothFilter,
+            saveJobOffer: saveJobOffer,
+        }
+        onSelectionFilterSubmitted(data)
+    }
+
     return (
         <>
         <Box sx={{ display: "flex", justifyContent:"space-between" }}>
@@ -338,7 +356,7 @@ const AddSelectionFilter = (props:any) => {
                     label="Save Job Offer info for later use"
                 />
                 </FormGroup>
-            <button onClick={props.handleNext} disabled={!filterOptionFilled()}>Next</button>
+            <button onClick={handleSubmit} disabled={!filterOptionFilled()}>Next</button>
             </>
     )
 }
