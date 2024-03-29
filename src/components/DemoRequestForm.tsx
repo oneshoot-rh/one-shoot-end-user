@@ -88,20 +88,21 @@ const DemoRequestForm: React.FC = () => {
   const callApi = () => {
     // disable submit button
     setFormSubmitted(true);
-    AxiosInstance.post('/tenantService/cl/subscriptions/subscribe?isDemo=true', formData).then((response) => {
+    AxiosInstance.post('/tenantService/api/cl/subscriptions/subscribe?isDemo=true', formData).then((response) => {
       console.log(response);
       toast.success('Request submitted successfully Please check your email for further instructions');
-    }).catch((error) => {
-      console.error(error);
-      toast.error('Somthing went wrong! Please try again.');
-      // go to email in alert   
-      // open gmail in new window 
       setTimeout(() => {
         const response = confirm("Open Gmail to check email?");
         if (response) {
           window.open('https://mail.google.com/mail/u/0/#inbox', '_blank');
         }
       },2000);
+    }).catch((error) => {
+      console.error(error);
+      toast.error('Somthing went wrong! Please try again.');
+      // go to email in alert   
+      // open gmail in new window 
+      
     });
   }
 
