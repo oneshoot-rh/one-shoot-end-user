@@ -5,9 +5,9 @@ import { getUser } from "../../helpers/auth_helper";
 
 
 const AxiosInstance = axios.create({
-    // headers: {
-    //     'Content-Type': 'application/json'
-    // }
+    headers: {
+       'Access-Control-Allow-Origin': '*',
+    }
 });
 
 

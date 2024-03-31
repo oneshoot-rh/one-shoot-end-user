@@ -7,7 +7,7 @@ export default defineConfig({
   
   server: {
     port: 3000,
-    host: 'oneshoot.local',
+    //host: 'oneshoot.local',
     proxy: {
       '/tenantService': {
         target: 'http://tenantService.oneshoot.local:80//', 
@@ -21,7 +21,7 @@ export default defineConfig({
         }    
       },
       '/onboarding': {
-        target: 'http://org1710248699666.oneshoot.local:80//',
+        target: 'http://myorg.oneshoot.local:80//',  // until finding best wat to dynamically set the target based on tenant's subdomain
         changeOrigin: true,
         secure: false,
         ws: true,

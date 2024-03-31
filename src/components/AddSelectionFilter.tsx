@@ -27,76 +27,76 @@ const AddSelectionFilter = ({onSelectionFilterSubmitted}) => {
 
 
     const [selectionVariables , setSelectionVariables] = useState<SelectionVariable[]>([
-        // {
-        //     "name": "title",
-        //     "value": ""
-        // },
-        // {
-        //     "name": "experience",
-        //     "value": "",
-        //     "selectRange": {
-        //         "unit": "years",
-        //         "min": 0,
-        //         "max": 30
-        //     }
-        // },
-        // {
-        //     "name": "location",
-        //     "value": "",
-        //     "select": {
-        //         "type": "multiple",
-        //         "options": ["Morocco","France","USA"]
-        //     }
-        // },
-        // {
-        //     "name": "salary",
-        //     "value": "",
-        //     "selectRange": {
-        //         "unit": "MAD/Month",
-        //         "min": 0,
-        //         "max": 100000,
-        //     }
-        // },
-        // {
-        //     "name": "contractType",
-        //     "value": "",
-        //     "select": {
-        //         "type": "multiple",
-        //         "options": ["Full Time","Part Time","Internship","Contract","Freelance"]
-        //     }
-        // },
-        // {
-        //     "name": "industry",
-        //     "value": "",
-        //     "select": {
-        //         "type": "multiple",
-        //         "options": ["IT","Finance","Marketing"]
-        //     }
-        // },
+        {
+            "name": "title",
+            "value": ""
+        },
+        {
+            "name": "experience",
+            "value": "",
+            "selectRange": {
+                "unit": "years",
+                "min": 0,
+                "max": 30
+            }
+        },
+        {
+            "name": "location",
+            "value": "",
+            "select": {
+                "type": "multiple",
+                "options": ["Morocco","France","USA"]
+            }
+        },
+        {
+            "name": "salary",
+            "value": "",
+            "selectRange": {
+                "unit": "MAD/Month",
+                "min": 0,
+                "max": 100000,
+            }
+        },
+        {
+            "name": "contractType",
+            "value": "",
+            "select": {
+                "type": "multiple",
+                "options": ["Full Time","Part Time","Internship","Contract","Freelance"]
+            }
+        },
+        {
+            "name": "industry",
+            "value": "",
+            "select": {
+                "type": "multiple",
+                "options": ["Fintech","Healthcare","E-commerce","Education","Transportation","Logistics","Real Estate","Construction","Agriculture","Energy","Telecom","IT","Software","Hardware","Automotive","Aerospace","Defense","Media","Entertainment","Gaming","Fashion","Retail","Hospitality","Tourism","Food","Beverage","Pharmaceutical","Chemical","Biotech","Manufacturing","Engineering","Consulting","Legal","Accounting","Finance","Banking","Insurance","Government","Public Sector","NGO","Non-Profit","Other"]
+            }
+        },
         {
             "name": "skills",
             "value": "",   // comma separated list
             "select": {
                 "type": "multiple",
-                "options": ["Java","Spring Boot","React","NodeJS","Express","MongoDB"]
+                "options": ["Java","Spring Boot","Kubernetes","JS","JavaScript","Html","React","NodeJS","Express","MongoDB", "Microservices", "Angular","VueJS","Python","Django","Flask","C++","C#",".NET","PHP","Laravel","Ruby","Ruby on Rails","Go","Rust","Swift","Kotlin","Android","iOS","Objective-C","SwiftUI","React Native","Flutter","Dart","JavaScript","TypeScript","HTML","CSS","SASS","LESS","Bootstrap","Tailwind CSS","Material UI","Ant Design","Chakra UI","Styled Components","Emotion","Jest","Mocha","Chai","Enzyme","Cypress","React Testing Library","Jasmine","Karma","Puppeteer","Playwright","Selenium","Appium","Detox","XCUITest","Espresso","UIAutomator","JUnit","TestNG","Mockito","PowerMock","EasyMock","JMock","Spock","RestAssured","Postman","Swagger","OpenAPI","Jenkins","CircleCI","TravisCI","GitLab CI","GitHub Actions","Docker","Kubernetes","AWS","GCP","Azure","Firebase","Heroku","Netlify","Vercel","DigitalOcean","Nginx","Apache","IIS","Linux","Ubuntu","Debian","CentOS","Red Hat","Fedora","Windows","MacOS","iOS","Android","Web","Mobile","Desktop","Cloud","DevOps","Backend","Frontend","Fullstack","QA","Testing","Automation","Manual","Performance","Security","Accessibility","SEO","SEM","Analytics","Data","Big Data","Data Science","Machine Learning","Deep Learning","AI","Artificial Intelligence","Computer Vision","NLP","Natural Language Processing","Speech Recognition","Chatbot","Blockchain","Cryptocurrency","Smart Contract","IoT","Internet of Things","AR","Augmented Reality","VR","Virtual Reality","Game Development","Unity","Unreal Engine","Blender","Maya","3DS Max","Photoshop","Illustrator","Figma","Sketch","InVision","Zeplin","Adobe XD","Axure RP","Balsamiq","MockFlow","Lucidchart","Miro","Trello","Asana","Jira","Slack","Microsoft Teams","Zoom","Google Meet","Skype","Discord","WhatsApp","Telegram","Signal","Facebook","Twitter","LinkedIn","Instagram","TikTok","Snapchat","YouTube","Reddit","Pinterest","Tumblr","Medium","WordPress","Blogger","Wix","Squarespace","Shopify","Magento","PrestaShop"]
             }
         },
-        // {
-        //     "name": "degreeRequired",
-        //     "value": "",
-        //     "select": {
-        //         "type": "single",
-        //         "options": ["None","Bachelor","Master","PhD"]
-        //     }
-        // },
-        // {
-        //     "name": "tools",
-        //     "value": "",   // comma separated list
-        //     "select": {
-        //         "type": "multiple",
-        //         "options": ["Git","Jira","Docker","Kubernetes","Jenkins","AWS"]
-        //     }
-        // }
+        {
+            "name": "degreeRequired",
+            "value": "",
+            "select": {
+                "type": "single",
+                "options": ["None","Bachelor","Master","PhD"]
+            }
+        },
+        {
+            "name": "tools",
+            "value": "",   // comma separated list
+            "select": {
+                "type": "multiple",
+                "options": ["Git","Jira","Docker","Kubernetes","Jenkins","AWS"]
+            }
+        }
     ])
     const [activeSelectionVariable, setActiveSelectionVariable] = useState<string>("")
     const [jobDescription, setJobDescription] = useState<string>("")
@@ -144,7 +144,8 @@ const AddSelectionFilter = ({onSelectionFilterSubmitted}) => {
         console.log(selectionVariablesList);
     }
     const filterOptionFilled = () => {
-        return selectionVariablesList.length >= selectionVariables.length ||
+
+        return selectionVariablesList.length > 0 ||
             jobDescription.length > JOB_DESCRIPTION_LENGTH_OBLIGATION; // 100 character 
     }
     const handleDeletFilter = (selectionVariable: SelectionVariable) => () => {       
@@ -232,12 +233,12 @@ const AddSelectionFilter = ({onSelectionFilterSubmitted}) => {
 
     
     const handleSubmit = ()=> {
-        const filters = [
-            {
-                filterKey: "Top Skills",
-                filterValue: selectionVariablesList[0].value.join(", ")
+        const filters = selectionVariablesList.map((selectionVariable: SelectionVariable) => {
+            return {
+                filterKey: selectionVariable.name,
+                filterValue: Array.isArray(selectionVariable.value) ? selectionVariable.value.join(", ") : (selectionVariable.selectRange!=null  ? selectionVariable.value+ " "+selectionVariable.selectRange.unit : selectionVariable.value)
             }
-        ];
+        });
         const data ={
             filters: filters,
             jobDescription: jobDescription,

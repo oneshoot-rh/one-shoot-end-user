@@ -8,6 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import CloseIcon from '@mui/icons-material/Close';
+import { ToastContainer, toast } from 'react-toastify';
 import Typography from '@mui/material/Typography';
 import "./styles/UploadResumes.css"
 import { Alert, IconButton } from "@mui/material"
@@ -18,6 +19,7 @@ import CustomizedSteppers from "./CustomizedStepper";
 import AddSelectionFilter from "./AddSelectionFilter";
 import AxiosInstance from "./api/AxiosInstance";
 import RecommendationLoader from "./RecommendationLoader";
+import ViewResumeAnalysisResult from "./ViewResumeAnalysisResult";
 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -32,6 +34,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 const UploadResumes = () => {
   const [activeStep, setActiveStep] = useState(0)
+  const [processedData, setProcessedData] = useState<[]>();
   const [deleteUploadedFromServerDialogShown, setDeleteUploadedFromServerDialogShown] = useState(false);
   const [fileList, setFileList] = useState<FileList | null>(null)
   const [resp, setResp] = useState<any>()
@@ -75,15 +78,18 @@ const UploadResumes = () => {
     console.log("submitted ",data)
     AxiosInstance.post('/onboarding/api/v1/filtering', data).then((res) => {
       console.log(res.data)
+      setProcessedData(res.data)
       handleNext()
+      // simulate time taken to process recommendation
       setTimeout(() => {
         handleNext()
       }, 5000);
       setTimeout(() => {
         setRecommendationLabel("Ready!")
-      }, 4000);
+      }, 3500);
     }).catch((err) => {
       console.log(err)
+      toast.error('Something went wrong! Please try again.')
     })
     
   }
@@ -110,6 +116,7 @@ const UploadResumes = () => {
           })
       } catch (error) {
         console.log(error)
+        toast.error('Somthing went wrong! '+ error +' Please try again.');
       }
     
     }
@@ -219,9 +226,9 @@ const UploadResumes = () => {
             </div>
           </div>
         )}
-           {/* <button  onClick={handleNext} className="active__button">
-                    Proceed
-           </button> */}
+           <Button  onClick={handleNext} size="small">
+                    Proceed Test
+           </Button>
           {uploadMutation.isLoading && <p>Uploading...</p>}
           {uploadMutation.isError && <p>Error uploading file(s)</p>}
       </div>
@@ -245,14 +252,15 @@ const UploadResumes = () => {
       <button onClick={handleNext}>Next</button>
     </>,
      <>
-      <p>view result _</p>
+      <ViewResumeAnalysisResult rows={processedData} />
       <button onClick={handleNext}>Next</button>
     </>
   ]
   return (
     <>
-    <CustomizedSteppers steps={steps} stepsComponents={stepsComponents} handleNext={handleNext} activeStep={activeStep} />
-      </>
+      <ToastContainer position="top-right" />
+      <CustomizedSteppers steps={steps} stepsComponents={stepsComponents} handleNext={handleNext} activeStep={activeStep} />
+    </>
   )
 }
 

@@ -4,14 +4,15 @@ import { UserManager } from "oidc-client";
 
 
 const settings = {
-    authority: "http://localhost:9999/realms/OneShoot",
+    authority: "http://oneshoot.local:9999/realms/OneShoot",
     client_id: "frontend_client",
-    redirect_uri: "http://localhost:3000/signin-callback.html",
+    redirect_uri: window.location.origin+"/signin-callback.html",
     response_type: "code",
     scope: "openid profile uploads.read",
-    post_logout_redirect_uri: "http://localhost:3000",
+    post_logout_redirect_uri: window.location.origin,
     onload: "login-required",
     refreshTokenAllowedScope: "offline_access",
+    automaticSilentRenew: true
 };
 
 const userManager = new UserManager(settings);
